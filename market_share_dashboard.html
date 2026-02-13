@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Australian Banking Market Share — December 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root {
+    --cba: #FFD700;
+    --nab: #E63946;
+    --anz: #3B82F6;
+    --wbc: #D5002B;
+    --mqg: #DADADA;
+    --bg: #F6F3EE;
+    --bg-warm: #FAF8F4;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --text-muted: #8A8A8A;
+    --accent-line: #D4CFC7;
+    --card-bg: #FFFFFF;
+    --card-shadow: 0 2px 40px rgba(0,0,0,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  .nav-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(246,243,238,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    transition: all 0.4s ease;
+  }
+  .nav-bar.scrolled { padding: 10px 32px; }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; font-weight: 600;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+  }
+  .nav-logo span { color: var(--text-muted); font-weight: 400; }
+  .nav-period {
+    font-size: 12px; color: var(--text-muted);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  /* ─── INTRO ─── */
+  #intro {
+    flex-direction: column;
+    padding: 100px 24px 60px;
+    min-height: 100vh;
+  }
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  .intro-subtitle {
+    font-size: clamp(14px, 1.8vw, 17px);
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+  .intro-subtitle em {
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    color: var(--text-primary);
+  }
+  #intro-chart {
+    width: 100%;
+    max-width: 700px;
+    flex: 1;
+    min-height: 400px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scroll-hint {
+    margin-top: 24px;
+    display: flex; flex-direction: column; align-items: center;
+    opacity: 0.5;
+    animation: floatHint 2.5s ease-in-out infinite;
+  }
+  .scroll-hint span {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 8px; font-weight: 500;
+  }
+  .scroll-hint svg { width: 18px; height: 18px; stroke: var(--text-muted); }
+  @keyframes floatHint {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ─── HOUSING SECTION ─── */
+  #housing {
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .housing-layout {
+    display: flex;
+    gap: 48px;
+    max-width: 1200px;
+    width: 100%;
+    align-items: flex-start;
+  }
+  .housing-left {
+    flex: 0 0 320px;
+    position: sticky;
+    top: 120px;
+  }
+  .housing-right {
+    flex: 1;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+  .section-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .section-description strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .stat-highlight {
+    display: flex; gap: 24px; margin-bottom: 32px;
+  }
+  .stat-box {
+    flex: 1;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .stat-box .stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .stat-box .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  /* Toggle */
+  .toggle-legend-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .view-toggle {
+    display: inline-flex;
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 3px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .toggle-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  .toggle-btn.active {
+    color: var(--text-primary);
+    background: var(--bg);
+  }
+
+  /* Chart Info */
+  .chart-info {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* FI Selector */
+  .fi-selector {
+    width: 100%;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background: var(--card-bg);
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* FI Details Table */
+  .fi-details {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .fi-details h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .fi-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .fi-detail-row:last-child {
+    border-bottom: none;
+  }
+  .fi-detail-label {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .fi-detail-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(26,26,26,0.92);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    max-width: 260px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .tooltip .tt-name {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tooltip .tt-row {
+    display: flex; justify-content: space-between; gap: 16px;
+  }
+  .tooltip .tt-label { color: rgba(255,255,255,0.6); }
+  .tooltip .tt-val { font-weight: 600; }
+
+  /* Chart container */
+  #housing-chart {
+    width: 100%;
+    min-height: 550px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .housing-layout {
+      flex-direction: column;
+      gap: 32px;
+    }
+    .housing-left {
+      flex: none;
+      position: relative;
+      top: 0;
+      width: 100%;
+    }
+    .stat-highlight { flex-direction: row; gap: 12px; }
+    .nav-bar { padding: 12px 16px; }
+    #intro { padding: 80px 16px 40px; }
+    #housing { padding: 80px 16px 60px; }
+
+    /* Prevent toggle from extending on mobile */
+    .view-toggle {
+      display: inline-flex;
+      max-width:330px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .toggle-btn {
+      padding: 8px 12px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Smaller chart labels on mobile */
+    .node-label {
+      font-size: 12px;
+    }
+    .node-pct {
+      font-size: 16px;
+    }
+    .axis-label {
+      font-size: 9px;
+    }
+  }
+
+  /* Beeswarm axis */
+  .axis-line {
+    stroke: var(--accent-line);
+    stroke-width: 1;
+  }
+  .axis-label {
+    font-family: 'DM Sans', sans-serif;
+    fill: var(--text-muted);
+    font-size: 11px;
+  }
+  .axis-tick text {
+    font-family: 'DM Sans', sans-serif;
+    fill: var(--text-muted);
+    font-size: 10px;
+  }
+  .axis-tick line {
+    stroke: var(--accent-line);
+    stroke-width: 0.5;
+  }
+  .growth-reference {
+    stroke: var(--text-muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 6,4;
+  }
+  .growth-ref-label {
+    font-family: 'DM Sans', sans-serif;
+    fill: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* Node labels */
+  .node-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    fill: var(--text-primary);
+    font-weight: 600;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+  .node-label-small {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .node-pct {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    fill: var(--text-secondary);
+    font-weight: 500;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+
+  /* Growth view reference text */
+  .growth-info-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    fill: var(--text-muted);
+    text-anchor: start;
+  }
+  .growth-info-highlight {
+    font-weight: 600;
+    fill: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav-bar" id="navbar">
+  <div class="nav-logo">Market Share <span>/ Dashboard</span></div>
+  <div class="nav-period">Dec 25</div>
+</nav>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- Intro Section -->
+<section class="section" id="intro">
+  <h1 class="intro-title">Australian Banking<br>Market Share</h1>
+  <p class="intro-subtitle">A visual exploration of <em>121 institutions</em> competing in Australia's banking landscape, based on APRA monthly statistics.<br><span style="font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px;">Data: APRA Monthly ADI Statistics · December 2025 & June 2025</span></p>
+  <div id="intro-chart"></div>
+  <div class="scroll-hint">
+    <span>Scroll to explore</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+  </div>
+</section>
+
+<!-- Housing Loans Section -->
+<section class="section" id="housing">
+  <div class="housing-layout">
+    <div class="housing-left">
+      <h2 class="section-title">Housing Loans</h2>
+      <p class="section-description">
+        Total loans to households for housing, combining <strong>owner-occupied</strong> and <strong>investment</strong> lending. This is the largest category of ADI lending in Australia.
+      </p>
+      <div class="stat-highlight">
+        <div class="stat-box">
+          <div class="stat-val" id="stat-total">$2.43T</div>
+          <div class="stat-label">Total Market · Dec 25</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-growth">+3.49%</div>
+          <div class="stat-label">System Growth · 6m</div>
+        </div>
+      </div>
+      <div class="toggle-legend-row">
+        <div class="view-toggle">
+          <button class="toggle-btn active" data-view="share" onclick="switchView('share')">Market Share</button>
+          <button class="toggle-btn" data-view="growth" onclick="switchView('growth')">Growth</button>
+          <button class="toggle-btn" data-view="movers" onclick="switchView('movers')">Movers</button>
+          <button class="toggle-btn" data-view="big5" onclick="switchView('big5')">Big 5</button>
+          <button class="toggle-btn" data-view="fi" onclick="switchView('fi')">FI</button>
+        </div>
+        <div class="chart-info" id="chartInfo" style="display: none;">
+          Circle size: <strong style="color: var(--text-primary);">Market Share</strong> · Vertical axis: <strong style="color: var(--text-primary);">6m Growth</strong> · <span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system
+        </div>
+        <div id="fiSelector" style="display: none;">
+          <select class="fi-selector" id="bankSelect" onchange="updateFIDetails()">
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="housing-right">
+      <div id="housing-chart"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const DATA = {"institutions": [{"name": "Agricultural Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Alex Bank Pty Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "AMP Bank Limited", "housing_total_dec": 22787.1, "housing_total_jun": 22190.300000000003, "market_share": 0.9393, "growth": 2.6895}, {"name": "Arab Bank Australia Limited", "housing_total_dec": 562.0, "housing_total_jun": 579.4000000000001, "market_share": 0.0232, "growth": -3.0031}, {"name": "Australia and New Zealand Banking Group Limited", "housing_total_dec": 321484.6, "housing_total_jun": 317707.2, "market_share": 13.2514, "growth": 1.189}, {"name": "Australian Military Bank Ltd", "housing_total_dec": 1910.0, "housing_total_jun": 1745.3, "market_share": 0.0787, "growth": 9.4368}, {"name": "Australian Mutual Bank Ltd", "housing_total_dec": 1318.6, "housing_total_jun": 1328.2, "market_share": 0.0544, "growth": -0.7228}, {"name": "Australian Settlements Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Avenue Bank Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "B & E Ltd", "housing_total_dec": 1689.0, "housing_total_jun": 1626.7, "market_share": 0.0696, "growth": 3.8298}, {"name": "Bank Australia Limited", "housing_total_dec": 16124.4, "housing_total_jun": 9205.6, "market_share": 0.6646, "growth": 75.1586}, {"name": "Bank of America, National Association", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Baroda", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of China (Australia) Limited", "housing_total_dec": 7674.2, "housing_total_jun": 7082.0, "market_share": 0.3163, "growth": 8.362}, {"name": "Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Communications Co., Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Queensland Limited", "housing_total_dec": 53663.299999999996, "housing_total_jun": 56305.7, "market_share": 2.212, "growth": -4.693}, {"name": "Bank of Sydney Ltd", "housing_total_dec": 1882.9, "housing_total_jun": 1829.5, "market_share": 0.0776, "growth": 2.9188}, {"name": "Bank of Taiwan", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Barclays Bank PLC", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bendigo and Adelaide Bank Limited", "housing_total_dec": 63312.1, "housing_total_jun": 64954.4, "market_share": 2.6097, "growth": -2.5284}, {"name": "Beyond Bank Australia Limited", "housing_total_dec": 9051.0, "housing_total_jun": 8472.2, "market_share": 0.3731, "growth": 6.8318}, {"name": "BNK Banking Corporation Limited", "housing_total_dec": 711.7, "housing_total_jun": 743.1, "market_share": 0.0293, "growth": -4.2255}, {"name": "BNP Paribas", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Canadian Imperial Bank of Commerce", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Central West Credit Union Limited", "housing_total_dec": 146.8, "housing_total_jun": 141.0, "market_share": 0.0061, "growth": 4.1135}, {"name": "China Construction Bank Corporation", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "China Everbright Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "China Merchants Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Citibank, N.A.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Coastline Credit Union Limited", "housing_total_dec": 648.7, "housing_total_jun": 637.0, "market_share": 0.0267, "growth": 1.8367}, {"name": "Commonwealth Bank of Australia", "housing_total_dec": 616445.3, "housing_total_jun": 593663.4, "market_share": 25.4095, "growth": 3.8375}, {"name": "Community First Credit Union Limited", "housing_total_dec": 1837.7, "housing_total_jun": 1745.0, "market_share": 0.0757, "growth": 5.3123}, {"name": "Cooperatieve Rabobank U.A.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Credit Agricole Corporate and Investment Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Credit Union Australia Ltd", "housing_total_dec": 18044.2, "housing_total_jun": 17320.4, "market_share": 0.7438, "growth": 4.1789}, {"name": "Credit Union SA Ltd", "housing_total_dec": 1726.6, "housing_total_jun": 1626.9, "market_share": 0.0712, "growth": 6.1282}, {"name": "Cuscal Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "DBS Bank Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Defence Bank Limited", "housing_total_dec": 3635.0, "housing_total_jun": 3471.3999999999996, "market_share": 0.1498, "growth": 4.7128}, {"name": "Deutsche Bank Aktiengesellschaft", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Dnister Ukrainian Credit Co-operative Limited", "housing_total_dec": 207.7, "housing_total_jun": 192.10000000000002, "market_share": 0.0086, "growth": 8.1208}, {"name": "E.SUN Commercial Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Family First Credit Union Limited", "housing_total_dec": 214.5, "housing_total_jun": 211.10000000000002, "market_share": 0.0088, "growth": 1.6106}, {"name": "First Commercial Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "First Option Bank Ltd", "housing_total_dec": 244.7, "housing_total_jun": 236.89999999999998, "market_share": 0.0101, "growth": 3.2925}, {"name": "Gateway Bank Ltd", "housing_total_dec": 1095.7, "housing_total_jun": 1123.0, "market_share": 0.0452, "growth": -2.431}, {"name": "Goulburn Murray Credit Union Co-operative Limited", "housing_total_dec": 376.6, "housing_total_jun": 355.8, "market_share": 0.0155, "growth": 5.846}, {"name": "Heartland Bank Australia Limited", "housing_total_dec": 208.8, "housing_total_jun": 168.0, "market_share": 0.0086, "growth": 24.2857}, {"name": "Heritage and People's Choice Limited", "housing_total_dec": 20800.4, "housing_total_jun": 19979.4, "market_share": 0.8574, "growth": 4.1092}, {"name": "Horizon Credit Union Ltd", "housing_total_dec": 508.2, "housing_total_jun": 487.7, "market_share": 0.0209, "growth": 4.2034}, {"name": "HSBC Bank Australia Limited", "housing_total_dec": 34739.100000000006, "housing_total_jun": 33220.1, "market_share": 1.4319, "growth": 4.5725}, {"name": "Hua Nan Commercial Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Hume Bank Limited", "housing_total_dec": 1536.2, "housing_total_jun": 1559.3000000000002, "market_share": 0.0633, "growth": -1.4814}, {"name": "IMB Ltd", "housing_total_dec": 6467.9, "housing_total_jun": 6040.700000000001, "market_share": 0.2666, "growth": 7.072}, {"name": "IN1Bank Ltd", "housing_total_dec": 2.8, "housing_total_jun": 2.5, "market_share": 0.0001, "growth": 12.0}, {"name": "Indue Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Industrial and Commercial Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "ING Bank (Australia) Limited", "housing_total_dec": 71710.5, "housing_total_jun": 66471.8, "market_share": 2.9559, "growth": 7.8811}, {"name": "ING Bank N.V.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Intesa Sanpaolo SPA", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "JPMorgan Chase Bank, National Association", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Judo Bank Pty Ltd", "housing_total_dec": 1170.9, "housing_total_jun": 1156.9, "market_share": 0.0483, "growth": 1.2101}, {"name": "KEB HANA Bank", "housing_total_dec": 4.9, "housing_total_jun": 4.9, "market_share": 0.0002, "growth": 0.0}, {"name": "Laboratories Credit Union Limited", "housing_total_dec": 247.20000000000002, "housing_total_jun": 242.7, "market_share": 0.0102, "growth": 1.8541}, {"name": "Land Bank of Taiwan Co., Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Macarthur Credit Union Ltd", "housing_total_dec": 265.3, "housing_total_jun": 258.5, "market_share": 0.0109, "growth": 2.6306}, {"name": "Macquarie Bank Limited", "housing_total_dec": 164695.9, "housing_total_jun": 144530.9, "market_share": 6.7887, "growth": 13.952}, {"name": "Maitland Mutual Limited", "housing_total_dec": 837.3, "housing_total_jun": 834.5, "market_share": 0.0345, "growth": 0.3355}, {"name": "Mega International Commercial Bank Co., Ltd.", "housing_total_dec": 9.7, "housing_total_jun": 10.399999999999999, "market_share": 0.0004, "growth": -6.7308}, {"name": "Members Banking Group Limited", "housing_total_dec": 2602.0, "housing_total_jun": 2551.1, "market_share": 0.1073, "growth": 1.9952}, {"name": "Mizuho Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "MUFG Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "MyState Bank Limited", "housing_total_dec": 10560.8, "housing_total_jun": 6234.5, "market_share": 0.4353, "growth": 69.3929}, {"name": "National Australia Bank Limited", "housing_total_dec": 343666.4, "housing_total_jun": 334662.2, "market_share": 14.1657, "growth": 2.6905}, {"name": "Newcastle Greater Mutual Group Ltd", "housing_total_dec": 18490.5, "housing_total_jun": 17531.7, "market_share": 0.7622, "growth": 5.469}, {"name": "Nonghyup Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Suncorp", "housing_total_dec": 57442.6, "housing_total_jun": 56515.6, "market_share": 2.3677, "growth": 1.6403}, {"name": "Northern Inland Credit Union Limited", "housing_total_dec": 317.1, "housing_total_jun": 308.1, "market_share": 0.0131, "growth": 2.9211}, {"name": "Orange Credit Union Limited", "housing_total_dec": 209.7, "housing_total_jun": 214.3, "market_share": 0.0086, "growth": -2.1465}, {"name": "Oversea-Chinese Banking Corporation Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "PayPal Australia Pty Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Police & Nurses Limited", "housing_total_dec": 7580.700000000001, "housing_total_jun": 7258.7, "market_share": 0.3125, "growth": 4.4361}, {"name": "Police Bank Ltd", "housing_total_dec": 2265.4, "housing_total_jun": 2149.8, "market_share": 0.0934, "growth": 5.3772}, {"name": "Police Credit Union Limited", "housing_total_dec": 989.5, "housing_total_jun": 912.8, "market_share": 0.0408, "growth": 8.4027}, {"name": "Police Financial Services Limited", "housing_total_dec": 2934.4, "housing_total_jun": 2737.2999999999997, "market_share": 0.121, "growth": 7.2005}, {"name": "QPCU Limited", "housing_total_dec": 877.1999999999999, "housing_total_jun": 838.5999999999999, "market_share": 0.0362, "growth": 4.6029}, {"name": "Queensland Country Bank Limited", "housing_total_dec": 2998.7000000000003, "housing_total_jun": 2844.5, "market_share": 0.1236, "growth": 5.421}, {"name": "Rabobank Australia Limited", "housing_total_dec": 213.6, "housing_total_jun": 227.10000000000002, "market_share": 0.0088, "growth": -5.9445}, {"name": "Railways Credit Union Limited", "housing_total_dec": 783.4, "housing_total_jun": 731.6, "market_share": 0.0323, "growth": 7.0804}, {"name": "Regional Australia Bank Ltd", "housing_total_dec": 2981.2, "housing_total_jun": 2819.2999999999997, "market_share": 0.1229, "growth": 5.7426}, {"name": "Royal Bank of Canada", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Shinhan Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Societe Generale", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "South West Slopes Credit Union Ltd", "housing_total_dec": 155.2, "housing_total_jun": 158.3, "market_share": 0.0064, "growth": -1.9583}, {"name": "Southern Cross Credit Union Ltd", "housing_total_dec": 770.9, "housing_total_jun": 753.7, "market_share": 0.0318, "growth": 2.2821}, {"name": "Standard Chartered Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "State Bank of India", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "State Street Bank and Trust Company", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Sumitomo Mitsui Banking Corporation", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Summerland Financial Services Limited", "housing_total_dec": 903.2, "housing_total_jun": 869.9, "market_share": 0.0372, "growth": 3.828}, {"name": "Taishin International Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Taiwan Business Bank, Ltd", "housing_total_dec": 14.3, "housing_total_jun": 15.0, "market_share": 0.0006, "growth": -4.6667}, {"name": "Taiwan Cooperative Bank, Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Teachers Mutual Bank Limited", "housing_total_dec": 9734.0, "housing_total_jun": 9105.2, "market_share": 0.4012, "growth": 6.9059}, {"name": "The Bank of New York Mellon", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Bank of Nova Scotia", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Capricornian Ltd", "housing_total_dec": 366.0, "housing_total_jun": 306.4, "market_share": 0.0151, "growth": 19.4517}, {"name": "The Hongkong and Shanghai Banking Corporation Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Northern Trust Company", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Tyro Payments Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "UBS AG", "housing_total_dec": 250.0, "housing_total_jun": 294.3, "market_share": 0.0103, "growth": -15.0527}, {"name": "Union Bank of India", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "United Overseas Bank Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Unity Bank Limited", "housing_total_dec": 2360.0, "housing_total_jun": 0, "market_share": 0.0973, "growth": 0}, {"name": "Victoria Teachers Limited", "housing_total_dec": 3220.5, "housing_total_jun": 3081.0, "market_share": 0.1327, "growth": 4.5278}, {"name": "Warwick Credit Union Ltd", "housing_total_dec": 360.8, "housing_total_jun": 349.1, "market_share": 0.0149, "growth": 3.3515}, {"name": "WAW Credit Union Co-Operative Limited", "housing_total_dec": 490.40000000000003, "housing_total_jun": 496.6, "market_share": 0.0202, "growth": -1.2485}, {"name": "Westpac Banking Corporation", "housing_total_dec": 502506.5, "housing_total_jun": 487935.5, "market_share": 20.713, "growth": 2.9863}, {"name": "Wise Australia Pty Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Woori Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}], "all_institutions": [{"name": "Agricultural Bank of China Limited", "total_assets": 8973.5, "housing_total": 0}, {"name": "Alex Bank Pty Ltd", "total_assets": 60.6, "housing_total": 0}, {"name": "AMP Bank Limited", "total_assets": 33572.4, "housing_total": 22787.1}, {"name": "Arab Bank Australia Limited", "total_assets": 1406.2, "housing_total": 562.0}, {"name": "Australia and New Zealand Banking Group Limited", "total_assets": 751883.6, "housing_total": 321484.6}, {"name": "Australian Military Bank Ltd", "total_assets": 2695.9, "housing_total": 1910.0}, {"name": "Australian Mutual Bank Ltd", "total_assets": 2243.4, "housing_total": 1318.6}, {"name": "Australian Settlements Limited", "total_assets": 582.4, "housing_total": 0}, {"name": "Avenue Bank Ltd", "total_assets": 67.9, "housing_total": 0}, {"name": "B & E Ltd", "total_assets": 2836.6, "housing_total": 1689.0}, {"name": "Bank Australia Limited", "total_assets": 23404.9, "housing_total": 16124.4}, {"name": "Bank of America, National Association", "total_assets": 38915.5, "housing_total": 0}, {"name": "Bank of Baroda", "total_assets": 1001.7, "housing_total": 0}, {"name": "Bank of China (Australia) Limited", "total_assets": 9679.7, "housing_total": 7674.2}, {"name": "Bank of China Limited", "total_assets": 35807.9, "housing_total": 0}, {"name": "Bank of Communications Co., Ltd.", "total_assets": 10955.8, "housing_total": 0}, {"name": "Bank of Queensland Limited", "total_assets": 115935.8, "housing_total": 53663.299999999996}, {"name": "Bank of Sydney Ltd", "total_assets": 4378.9, "housing_total": 1882.9}, {"name": "Bank of Taiwan", "total_assets": 1015.7, "housing_total": 0}, {"name": "Barclays Bank PLC", "total_assets": 1095.4, "housing_total": 0}, {"name": "Bendigo and Adelaide Bank Limited", "total_assets": 111675.5, "housing_total": 63312.1}, {"name": "Beyond Bank Australia Limited", "total_assets": 15654.3, "housing_total": 9051.0}, {"name": "BNK Banking Corporation Limited", "total_assets": 1242.7, "housing_total": 711.7}, {"name": "BNP Paribas", "total_assets": 21157.0, "housing_total": 0}, {"name": "Canadian Imperial Bank of Commerce", "total_assets": 3933.5, "housing_total": 0}, {"name": "Central West Credit Union Limited", "total_assets": 309.8, "housing_total": 146.8}, {"name": "China Construction Bank Corporation", "total_assets": 11984.3, "housing_total": 0}, {"name": "China Everbright Bank Co., Ltd", "total_assets": 7968.9, "housing_total": 0}, {"name": "China Merchants Bank Co., Ltd", "total_assets": 1790.2, "housing_total": 0}, {"name": "Citibank, N.A.", "total_assets": 20041.7, "housing_total": 0}, {"name": "Coastline Credit Union Limited", "total_assets": 950.7, "housing_total": 648.7}, {"name": "Commonwealth Bank of Australia", "total_assets": 1192189.6, "housing_total": 616445.3}, {"name": "Community First Credit Union Limited", "total_assets": 3658.1, "housing_total": 1837.7}, {"name": "Cooperatieve Rabobank U.A.", "total_assets": 24035.7, "housing_total": 0}, {"name": "Credit Agricole Corporate and Investment Bank", "total_assets": 9136.3, "housing_total": 0}, {"name": "Credit Union Australia Ltd", "total_assets": 24619.4, "housing_total": 18044.2}, {"name": "Credit Union SA Ltd", "total_assets": 2467.5, "housing_total": 1726.6}, {"name": "Cuscal Limited", "total_assets": 4412.2, "housing_total": 0}, {"name": "DBS Bank Ltd", "total_assets": 17940.0, "housing_total": 0}, {"name": "Defence Bank Limited", "total_assets": 5130.1, "housing_total": 3635.0}, {"name": "Deutsche Bank Aktiengesellschaft", "total_assets": 17236.3, "housing_total": 0}, {"name": "Dnister Ukrainian Credit Co-operative Limited", "total_assets": 291.2, "housing_total": 207.7}, {"name": "E.SUN Commercial Bank, Ltd.", "total_assets": 3971.2, "housing_total": 0}, {"name": "Family First Credit Union Limited", "total_assets": 261.5, "housing_total": 214.5}, {"name": "First Commercial Bank", "total_assets": 2978.4, "housing_total": 0}, {"name": "First Option Bank Ltd", "total_assets": 318.7, "housing_total": 244.7}, {"name": "Gateway Bank Ltd", "total_assets": 1955.2, "housing_total": 1095.7}, {"name": "Goulburn Murray Credit Union Co-operative Limited", "total_assets": 614.0, "housing_total": 376.6}, {"name": "Heartland Bank Australia Limited", "total_assets": 3146.3, "housing_total": 208.8}, {"name": "Heritage and People's Choice Limited", "total_assets": 28434.2, "housing_total": 20800.4}, {"name": "Horizon Credit Union Ltd", "total_assets": 789.0, "housing_total": 508.2}, {"name": "HSBC Bank Australia Limited", "total_assets": 66394.9, "housing_total": 34739.100000000006}, {"name": "Hua Nan Commercial Bank, Ltd.", "total_assets": 1571.4, "housing_total": 0}, {"name": "Hume Bank Limited", "total_assets": 2586.0, "housing_total": 1536.2}, {"name": "IMB Ltd", "total_assets": 10656.0, "housing_total": 6467.9}, {"name": "IN1Bank Ltd", "total_assets": 31.6, "housing_total": 2.8}, {"name": "Indue Ltd", "total_assets": 893.6, "housing_total": 0}, {"name": "Industrial and Commercial Bank of China Limited", "total_assets": 17888.2, "housing_total": 0}, {"name": "ING Bank (Australia) Limited", "total_assets": 113887.3, "housing_total": 71710.5}, {"name": "ING Bank N.V.", "total_assets": 19318.5, "housing_total": 0}, {"name": "Intesa Sanpaolo SPA", "total_assets": 3254.0, "housing_total": 0}, {"name": "JPMorgan Chase Bank, National Association", "total_assets": 23723.4, "housing_total": 0}, {"name": "Judo Bank Pty Ltd", "total_assets": 19200.4, "housing_total": 1170.9}, {"name": "KEB HANA Bank", "total_assets": 971.6, "housing_total": 4.9}, {"name": "Laboratories Credit Union Limited", "total_assets": 306.7, "housing_total": 247.20000000000002}, {"name": "Land Bank of Taiwan Co., Ltd.", "total_assets": 260.3, "housing_total": 0}, {"name": "Macarthur Credit Union Ltd", "total_assets": 400.4, "housing_total": 265.3}, {"name": "Macquarie Bank Limited", "total_assets": 321639.4, "housing_total": 164695.9}, {"name": "Maitland Mutual Limited", "total_assets": 1427.2, "housing_total": 837.3}, {"name": "Mega International Commercial Bank Co., Ltd.", "total_assets": 3941.9, "housing_total": 9.7}, {"name": "Members Banking Group Limited", "total_assets": 3784.7, "housing_total": 2602.0}, {"name": "Mizuho Bank, Ltd.", "total_assets": 27512.3, "housing_total": 0}, {"name": "MUFG Bank, Ltd.", "total_assets": 32802.9, "housing_total": 0}, {"name": "MyState Bank Limited", "total_assets": 15154.4, "housing_total": 10560.8}, {"name": "National Australia Bank Limited", "total_assets": 982677.2, "housing_total": 343666.4}, {"name": "Newcastle Greater Mutual Group Ltd", "total_assets": 26790.6, "housing_total": 18490.5}, {"name": "Nonghyup Bank", "total_assets": 278.9, "housing_total": 0}, {"name": "Suncorp", "total_assets": 95345.0, "housing_total": 57442.6}, {"name": "Northern Inland Credit Union Limited", "total_assets": 478.5, "housing_total": 317.1}, {"name": "Orange Credit Union Limited", "total_assets": 331.7, "housing_total": 209.7}, {"name": "Oversea-Chinese Banking Corporation Limited", "total_assets": 19052.8, "housing_total": 0}, {"name": "PayPal Australia Pty Limited", "total_assets": 1801.2, "housing_total": 0}, {"name": "Police & Nurses Limited", "total_assets": 11154.1, "housing_total": 7580.700000000001}, {"name": "Police Bank Ltd", "total_assets": 3450.1, "housing_total": 2265.4}, {"name": "Police Credit Union Limited", "total_assets": 1537.4, "housing_total": 989.5}, {"name": "Police Financial Services Limited", "total_assets": 4170.5, "housing_total": 2934.4}, {"name": "QPCU Limited", "total_assets": 1356.8, "housing_total": 877.1999999999999}, {"name": "Queensland Country Bank Limited", "total_assets": 4442.0, "housing_total": 2998.7000000000003}, {"name": "Rabobank Australia Limited", "total_assets": 27956.9, "housing_total": 213.6}, {"name": "Railways Credit Union Limited", "total_assets": 1082.3, "housing_total": 783.4}, {"name": "Regional Australia Bank Ltd", "total_assets": 4742.2, "housing_total": 2981.2}, {"name": "Royal Bank of Canada", "total_assets": 22029.9, "housing_total": 0}, {"name": "Shinhan Bank Co., Ltd", "total_assets": 1132.4, "housing_total": 0}, {"name": "Societe Generale", "total_assets": 6185.5, "housing_total": 0}, {"name": "South West Slopes Credit Union Ltd", "total_assets": 328.7, "housing_total": 155.2}, {"name": "Southern Cross Credit Union Ltd", "total_assets": 1055.1, "housing_total": 770.9}, {"name": "Standard Chartered Bank", "total_assets": 5124.2, "housing_total": 0}, {"name": "State Bank of India", "total_assets": 2052.3, "housing_total": 0}, {"name": "State Street Bank and Trust Company", "total_assets": 6876.4, "housing_total": 0}, {"name": "Sumitomo Mitsui Banking Corporation", "total_assets": 42344.4, "housing_total": 0}, {"name": "Summerland Financial Services Limited", "total_assets": 1215.8, "housing_total": 903.2}, {"name": "Taishin International Bank Co., Ltd", "total_assets": 1621.6, "housing_total": 0}, {"name": "Taiwan Business Bank, Ltd", "total_assets": 2114.2, "housing_total": 14.3}, {"name": "Taiwan Cooperative Bank, Ltd", "total_assets": 1295.3, "housing_total": 0}, {"name": "Teachers Mutual Bank Limited", "total_assets": 13475.6, "housing_total": 9734.0}, {"name": "The Bank of New York Mellon", "total_assets": 54.4, "housing_total": 0}, {"name": "The Bank of Nova Scotia", "total_assets": 923.3, "housing_total": 0}, {"name": "The Capricornian Ltd", "total_assets": 459.9, "housing_total": 366.0}, {"name": "The Hongkong and Shanghai Banking Corporation Limited", "total_assets": 37447.1, "housing_total": 0}, {"name": "The Northern Trust Company", "total_assets": 3744.1, "housing_total": 0}, {"name": "Tyro Payments Limited", "total_assets": 483.3, "housing_total": 0}, {"name": "UBS AG", "total_assets": 20642.4, "housing_total": 250.0}, {"name": "Union Bank of India", "total_assets": 524.4, "housing_total": 0}, {"name": "United Overseas Bank Limited", "total_assets": 21617.8, "housing_total": 0}, {"name": "Unity Bank Limited", "total_assets": 4612.0, "housing_total": 2360.0}, {"name": "Victoria Teachers Limited", "total_assets": 4682.1, "housing_total": 3220.5}, {"name": "Warwick Credit Union Ltd", "total_assets": 569.7, "housing_total": 360.8}, {"name": "WAW Credit Union Co-Operative Limited", "total_assets": 744.6, "housing_total": 490.40000000000003}, {"name": "Westpac Banking Corporation", "total_assets": 1117245.6, "housing_total": 502506.5}, {"name": "Wise Australia Pty Ltd", "total_assets": 2320.5, "housing_total": 0}, {"name": "Woori Bank", "total_assets": 645.9, "housing_total": 0}], "total_market_dec": 2426044.5, "total_market_jun": 2344265.0, "system_growth": 3.4885};
+
+const BANK_COLORS = {
+  'Commonwealth Bank of Australia': '#FFD700',
+  'National Australia Bank Limited': '#E63946',
+  'Australia and New Zealand Banking Group Limited': '#3B82F6',
+  'Westpac Banking Corporation': '#D5002B',
+  'Macquarie Bank Limited': '#777B7E'
+};
+const BANK_SHORT = {
+  'Commonwealth Bank of Australia': 'CBA',
+  'National Australia Bank Limited': 'NAB',
+  'Australia and New Zealand Banking Group Limited': 'ANZ',
+  'Westpac Banking Corporation': 'WBC',
+  'Macquarie Bank Limited': 'MQG',
+  'Bank of Queensland Limited': 'BOQ',
+  'HSBC Bank Australia Limited': 'HSBC'
+};
+const DEFAULT_COLOR = '#C8C2B8';
+const isMajor = name => name in BANK_COLORS;
+const getColor = name => BANK_COLORS[name] || DEFAULT_COLOR;
+const getShort = name => BANK_SHORT[name] || null;
+
+// Build unified node list for both views
+const allInstitutions = DATA.all_institutions.map(d => {
+  const match = DATA.institutions.find(i => i.name === d.name);
+  return {
+    name: d.name,
+    totalAssets: d.total_assets,
+    housingTotal: d.housing_total,
+    marketShare: match ? match.market_share : 0,
+    growth: match ? match.growth : 0,
+    housingJun: match ? match.housing_total_jun : 0,
+    major: isMajor(d.name)
+  };
+});
+
+// Sort: majors first, then by assets
+allInstitutions.sort((a,b) => {
+  if (a.major !== b.major) return b.major - a.major;
+  return b.totalAssets - a.totalAssets;
+});
+
+const tooltip = d3.select('#tooltip');
+
+function showTooltip(event, d) {
+  const ms = d.marketShare;
+  const growth = d.growth;
+  const housing = d.housingTotal;
+  let html = `<div class="tt-name">${d.name}</div>`;
+  if (housing > 0) {
+    html += `<div class="tt-row"><span class="tt-label">Housing Loans</span><span class="tt-val">$${(housing/1000).toFixed(1)}B</span></div>`;
+    html += `<div class="tt-row"><span class="tt-label">Market Share</span><span class="tt-val">${ms.toFixed(2)}%</span></div>`;
+    html += `<div class="tt-row"><span class="tt-label">6m Growth</span><span class="tt-val">${growth >= 0 ? '+' : ''}${growth.toFixed(2)}%</span></div>`;
+  } else {
+    html += `<div class="tt-row"><span class="tt-label">Total Assets</span><span class="tt-val">$${(d.totalAssets/1000).toFixed(1)}B</span></div>`;
+    html += `<div class="tt-row"><span class="tt-label">Housing Loans</span><span class="tt-val">None</span></div>`;
+  }
+  tooltip.html(html).style('opacity', 1);
+  moveTooltip(event);
+}
+function moveTooltip(event) {
+  const tw = 260, th = 120;
+  let x = event.clientX + 16, y = event.clientY - 10;
+  if (x + tw > window.innerWidth) x = event.clientX - tw - 16;
+  if (y + th > window.innerHeight) y = event.clientY - th - 10;
+  tooltip.style('left', x + 'px').style('top', y + 'px');
+}
+function hideTooltip() { tooltip.style('opacity', 0); }
+
+// ═══════════════════════════════════════
+// INTRO BEESWARM
+// ═══════════════════════════════════════
+let introSVG, introNodes, introSim;
+const introRadius = d => {
+  const scaleFactor = isMobile() ? 0.05 : 0.08;
+  const maxRadius = isMobile() ? 40 : 50;
+  const r = Math.sqrt(d.totalAssets) * scaleFactor;
+  return Math.max(2, Math.min(r, maxRadius));
+};
+
+function createIntroChart() {
+  const container = document.getElementById('intro-chart');
+  const width = Math.min(container.clientWidth, 800);
+  const height = Math.min(600, window.innerHeight * 0.5);
+
+  introSVG = d3.select('#intro-chart')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('viewBox', `0 0 ${width} ${height}`);
+
+  introNodes = allInstitutions.map(d => ({
+    ...d,
+    r: introRadius(d),
+    x: width/2 + (Math.random()-0.5)*100,
+    y: height/2 + (Math.random()-0.5)*100,
+  }));
+
+  const circles = introSVG.selectAll('circle')
+    .data(introNodes)
+    .join('circle')
+    .attr('r', 0)
+    .attr('fill', d => getColor(d.name))
+    .attr('stroke', d => d.major ? d3.color(getColor(d.name)).darker(0.3) : 'rgba(0,0,0,0.06)')
+    .attr('stroke-width', d => d.major ? 2 : 0.5)
+    .attr('opacity', d => d.major ? 1 : 0.55);
+
+  // Animate circles in
+  circles.transition()
+    .duration(800)
+    .delay((d,i) => i * 8)
+    .ease(d3.easeCubicOut)
+    .attr('r', d => d.r);
+
+  // Labels for big banks
+  const labels = introSVG.selectAll('.intro-label')
+    .data(introNodes.filter(d => d.major))
+    .join('text')
+    .attr('class', 'node-label')
+    .text(d => getShort(d.name))
+    .attr('opacity', 0);
+
+  labels.transition().delay(900).duration(600).attr('opacity', 1);
+
+  introSim = d3.forceSimulation(introNodes)
+    .force('center', d3.forceCenter(width/2, height/2))
+    .force('charge', d3.forceManyBody().strength(d => d.major ? -2 : -0.5))
+    .force('collide', d3.forceCollide(d => d.r + 1.5).strength(0.8))
+    .force('x', d3.forceX(width/2).strength(0.04))
+    .force('y', d3.forceY(height/2).strength(0.04))
+    .alphaDecay(0.015)
+    .on('tick', () => {
+      circles.attr('cx', d => d.x).attr('cy', d => d.y);
+      labels.attr('x', d => d.x).attr('y', d => d.y + 3.5);
+    });
+
+  // Add click interaction for magnetic push effect
+  introSVG.on('click', function(event) {
+    const [clickX, clickY] = d3.pointer(event);
+    const pushStrength = 80;
+
+    introNodes.forEach(node => {
+      const dx = node.x - clickX;
+      const dy = node.y - clickY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 200) {
+        const force = (200 - distance) / 200 * pushStrength;
+        const angle = Math.atan2(dy, dx);
+        node.vx += Math.cos(angle) * force;
+        node.vy += Math.sin(angle) * force;
+      }
+    });
+
+    introSim.alpha(0.5).restart();
+  });
+}
+
+// ═══════════════════════════════════════
+// HOUSING SECTION BEESWARM
+// ═══════════════════════════════════════
+let housingSVG, housingGroup, housingWidth, housingHeight;
+let currentView = 'share';
+let housingSim = null;
+
+// Responsive margin and sizing based on screen width
+const isMobile = () => window.innerWidth <= 768;
+const getMargin = () => isMobile()
+  ? { top: 20, right: 60, bottom: 40, left: 60 }
+  : { top: 30, right: 40, bottom: 50, left: 40 };
+const margin = getMargin();
+
+// Only institutions with housing loans
+const housingData = allInstitutions.filter(d => d.housingTotal > 0);
+
+const housingRadius = d => {
+  const scaleFactor = isMobile() ? 10 : 16;
+  const maxRadius = isMobile() ? 35 : 56;
+  const r = Math.sqrt(d.marketShare) * scaleFactor;
+  return Math.max(2, Math.min(r, maxRadius));
+};
+
+function createHousingChart() {
+  const container = document.getElementById('housing-chart');
+  // Constrain width on mobile to prevent overflow, with minimum width
+  housingWidth = isMobile()
+    ? Math.max(425, Math.min(container.clientWidth, window.innerWidth - 32))
+    : container.clientWidth;
+  // Responsive height: smaller minimum for mobile
+  const minHeight = isMobile() ? 450 : 600;
+  const viewportRatio = isMobile() ? 0.6 : 0.7;
+  housingHeight = Math.max(minHeight, window.innerHeight * viewportRatio);
+
+  housingSVG = d3.select('#housing-chart')
+    .append('svg')
+    .attr('width', housingWidth)
+    .attr('height', housingHeight);
+
+  housingGroup = housingSVG.append('g');
+
+  // Create nodes
+  housingData.forEach(d => {
+    d.hr = housingRadius(d);
+    d.hx = housingWidth / 2;
+    d.hy = housingHeight / 2;
+  });
+
+  // Axis group
+  housingSVG.append('g').attr('class', 'axis-group');
+  housingSVG.append('g').attr('class', 'ref-group');
+
+  // Draw initial view
+  renderShareView(false);
+}
+
+function renderShareView(animate = true) {
+  currentView = 'share';
+  const dur = animate ? 700 : 0;
+  const m = getMargin();
+  const chartH = housingHeight - m.top - m.bottom;
+
+  // Y scale by market share (flipped: higher on top)
+  const yScale = d3.scaleLinear()
+    .domain([0, 28])
+    .range([housingHeight - m.bottom, m.top + 20]);
+
+  // Clear axis / ref
+  housingSVG.select('.axis-group').selectAll('*').remove();
+  housingSVG.select('.ref-group').selectAll('*').remove();
+
+  // Y axis ticks
+  const axisTicks = [0, 5, 10, 15, 20, 25];
+  const axisG = housingSVG.select('.axis-group');
+  axisTicks.forEach(t => {
+    const y = yScale(t);
+    axisG.append('line')
+      .attr('x1', m.left - 10).attr('x2', housingWidth - m.right)
+      .attr('y1', y).attr('y2', y)
+      .attr('stroke', '#E8E4DD').attr('stroke-width', 0.7)
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+
+    axisG.append('text')
+      .attr('x', m.left - 16).attr('y', y + 3.5)
+      .attr('text-anchor', 'end')
+      .attr('class', 'axis-label')
+      .text(t + '%')
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // Target positions
+  const centerX = housingWidth / 2;
+  housingData.forEach(d => {
+    d.targetX = centerX;
+    d.targetY = yScale(d.marketShare);
+  });
+
+  // Simulation with boundary constraints
+  if (housingSim) housingSim.stop();
+  housingSim = d3.forceSimulation(housingData)
+    .force('x', d3.forceX(d => d.targetX).strength(0.12))
+    .force('y', d3.forceY(d => d.targetY).strength(0.5))
+    .force('collide', d3.forceCollide(d => d.hr + 1.5).strength(0.85))
+    .alphaDecay(0.02)
+    .on('tick', () => {
+      // Constrain circles within bounds
+      housingData.forEach(d => {
+        const m = getMargin();
+        d.x = Math.max(m.left + d.hr, Math.min(housingWidth - m.right - d.hr, d.x));
+        d.y = Math.max(m.top + d.hr, Math.min(housingHeight - m.bottom - d.hr, d.y));
+      });
+      tickHousing();
+    });
+
+  updateHousingCircles(dur);
+}
+
+function renderGrowthView(animate = true) {
+  currentView = 'growth';
+  const dur = animate ? 700 : 0;
+  const systemGrowth = DATA.system_growth;
+  const m = getMargin();
+
+  // Y scale for growth (vertical, higher on top)
+  const growthExtent = d3.extent(housingData, d => d.growth);
+  const yMin = Math.min(-2, growthExtent[0] - 1);
+  const yMax = Math.max(growthExtent[1] + 2, systemGrowth + 2);
+
+  const yScale = d3.scaleLinear()
+    .domain([yMin, yMax])
+    .range([housingHeight - m.bottom, m.top + 20]);
+
+  // Clear axis / ref
+  housingSVG.select('.axis-group').selectAll('*').remove();
+  housingSVG.select('.ref-group').selectAll('*').remove();
+
+  const axisG = housingSVG.select('.axis-group');
+  const refG = housingSVG.select('.ref-group');
+
+  // Y axis ticks (20% intervals)
+  const ticks = d3.range(Math.ceil(yMin / 20) * 20, Math.floor(yMax) + 1, 20);
+
+  ticks.forEach(t => {
+    const y = yScale(t);
+    axisG.append('line')
+      .attr('x1', m.left - 10).attr('x2', housingWidth - m.right)
+      .attr('y1', y).attr('y2', y)
+      .attr('stroke', '#E8E4DD').attr('stroke-width', 0.7)
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+
+    axisG.append('text')
+      .attr('x', m.left - 16).attr('y', y + 3.5)
+      .attr('text-anchor', 'end')
+      .attr('class', 'axis-label')
+      .text((t >= 0 ? '+' : '') + t + '%')
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // System growth reference line
+  const refY = yScale(systemGrowth);
+  refG.append('line')
+    .attr('x1', m.left - 10).attr('x2', housingWidth - m.right)
+    .attr('y1', refY).attr('y2', refY)
+    .attr('class', 'growth-reference')
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 0.7);
+
+  refG.append('text')
+    .attr('x', m.left - 16).attr('y', refY - 6)
+    .attr('text-anchor', 'end')
+    .attr('class', 'growth-ref-label')
+    .text(`System +${systemGrowth.toFixed(1)}%`)
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 1);
+
+  // Targets
+  const centerX = housingWidth / 2;
+  housingData.forEach(d => {
+    d.targetX = centerX;
+    d.targetY = yScale(d.growth);
+  });
+
+  // Simulation with boundary constraints
+  if (housingSim) housingSim.stop();
+  housingSim = d3.forceSimulation(housingData)
+    .force('x', d3.forceX(d => d.targetX).strength(0.12))
+    .force('y', d3.forceY(d => d.targetY).strength(0.5))
+    .force('collide', d3.forceCollide(d => d.hr + 1.5).strength(0.85))
+    .alphaDecay(0.02)
+    .on('tick', () => {
+      // Constrain circles within bounds
+      housingData.forEach(d => {
+        const m = getMargin();
+        d.x = Math.max(m.left + d.hr, Math.min(housingWidth - m.right - d.hr, d.x));
+        d.y = Math.max(m.top + d.hr, Math.min(housingHeight - m.bottom - d.hr, d.y));
+      });
+      tickHousing();
+    });
+
+  updateHousingCircles(dur);
+}
+
+function updateHousingCircles(dur) {
+  const systemGrowth = DATA.system_growth;
+
+  const circles = housingGroup.selectAll('circle')
+    .data(housingData, d => d.name);
+
+  const enter = circles.enter()
+    .append('circle')
+    .attr('r', 0)
+    .attr('fill', d => getColor(d.name))
+    .attr('cursor', 'pointer')
+    .on('mouseenter', (e,d) => {
+      d3.select(e.target).attr('opacity', 1).attr('stroke-width', 2).attr('stroke', d3.color(getColor(d.name)).darker(0.5));
+      showTooltip(e,d);
+    })
+    .on('mousemove', moveTooltip)
+    .on('mouseleave', (e,d) => {
+      const defaultStroke = currentView === 'growth'
+        ? (d.growth >= systemGrowth ? '#22c55e' : '#ef4444')
+        : (d.major ? d3.color(getColor(d.name)).darker(0.3) : 'rgba(0,0,0,0.06)');
+      const defaultStrokeWidth = (currentView === 'growth' || d.major) ? 2 : 0.5;
+      d3.select(e.target)
+        .attr('opacity', d.major ? 1 : 0.5)
+        .attr('stroke-width', defaultStrokeWidth)
+        .attr('stroke', defaultStroke);
+      hideTooltip();
+    });
+
+  enter.merge(circles)
+    .transition().duration(dur).ease(d3.easeCubicOut)
+    .attr('r', d => d.hr)
+    .attr('stroke', d => {
+      if (currentView === 'growth') {
+        return d.growth >= systemGrowth ? '#22c55e' : '#ef4444';
+      }
+      return d.major ? d3.color(getColor(d.name)).darker(0.3) : 'rgba(0,0,0,0.06)';
+    })
+    .attr('stroke-width', d => (currentView === 'growth' || d.major) ? 2 : 0.5)
+    .attr('opacity', d => d.major ? 1 : 0.5);
+
+  // Labels (show fewer on mobile)
+  const labelThreshold = isMobile() ? 3.0 : 1.5;
+  const labels = housingGroup.selectAll('.h-label')
+    .data(housingData.filter(d => d.major || d.marketShare > labelThreshold), d => d.name);
+
+  labels.enter()
+    .append('text')
+    .attr('class', 'h-label node-label')
+    .merge(labels)
+    .text(d => getShort(d.name) || d.name.split(' ')[0]);
+
+  labels.exit().remove();
+
+  // Pct labels inside big circles (require larger circles on mobile)
+  const pctThreshold = isMobile() ? 20 : 18;
+  const pctLabels = housingGroup.selectAll('.h-pct')
+    .data(housingData.filter(d => d.hr > pctThreshold), d => d.name);
+
+  pctLabels.enter()
+    .append('text')
+    .attr('class', 'h-pct node-pct')
+    .merge(pctLabels)
+    .text(d => currentView === 'share'
+      ? d.marketShare.toFixed(1) + '%'
+      : (d.growth >= 0 ? '+' : '') + d.growth.toFixed(1) + '%');
+
+  pctLabels.exit().remove();
+}
+
+function tickHousing() {
+  housingGroup.selectAll('circle')
+    .attr('cx', d => d.hx = d.x)
+    .attr('cy', d => d.hy = d.y);
+  housingGroup.selectAll('.h-label')
+    .attr('x', d => d.hx)
+    .attr('y', d => d.hy - 8);
+  housingGroup.selectAll('.h-pct')
+    .attr('x', d => d.hx)
+    .attr('y', d => d.hy + 16);
+}
+
+function renderMoversView(animate = true) {
+  currentView = 'movers';
+  const dur = animate ? 700 : 0;
+
+  // Clear axis and ref
+  housingSVG.select('.axis-group').selectAll('*').remove();
+  housingSVG.select('.ref-group').selectAll('*').remove();
+
+  // Stop simulation
+  if (housingSim) housingSim.stop();
+
+  // Clear existing circles and labels
+  housingGroup.selectAll('*').remove();
+
+  // Get top 5 and bottom 5 by growth (highest to lowest)
+  const sorted = [...housingData].sort((a, b) => b.growth - a.growth);
+  const topBottom = [...sorted.slice(0, 5), ...sorted.slice(-5)];
+
+  // Custom margins for Movers view to accommodate labels
+  const m = isMobile()
+    ? { top: 40, right: 80, bottom: 60, left: 150 }
+    : { top: 30, right: 80, bottom: 50, left: 200 };
+
+  const chartWidth = housingWidth - m.left - m.right;
+  const chartHeight = housingHeight - m.top - m.bottom;
+  const barHeight = Math.min(40, chartHeight / (topBottom.length + 1));
+  const barGap = 8;
+
+  const maxGrowth = Math.max(...topBottom.map(d => Math.abs(d.growth)));
+  const xScale = d3.scaleLinear()
+    .domain([-maxGrowth, maxGrowth])
+    .range([m.left, housingWidth - m.right]);
+
+  const zeroX = xScale(0);
+
+  // Helper function to wrap text
+  function wrapText(text, width) {
+    const words = text.split(/\s+/);
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const testLine = currentLine + ' ' + words[i];
+      if (testLine.length * 6 < width) {
+        currentLine = testLine;
+      } else {
+        lines.push(currentLine);
+        currentLine = words[i];
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
+
+  // Draw bars
+  topBottom.forEach((d, i) => {
+    const y = m.top + i * (barHeight + barGap);
+    const barWidth = Math.abs(xScale(d.growth) - zeroX);
+    const barX = d.growth >= 0 ? zeroX : xScale(d.growth);
+    const color = d.growth >= DATA.system_growth ? '#22c55e' : '#ef4444';
+
+    housingGroup.append('rect')
+      .attr('x', zeroX)
+      .attr('y', y)
+      .attr('width', 0)
+      .attr('height', barHeight)
+      .attr('fill', color)
+      .attr('opacity', 0.8)
+      .transition().duration(dur)
+      .attr('x', barX)
+      .attr('width', barWidth);
+
+    // Use short name or wrap full name
+    const displayName = getShort(d.name) || d.name;
+    const lines = wrapText(displayName, m.left - 20);
+    const lineHeight = 12;
+    const textY = y + barHeight / 2 - ((lines.length - 1) * lineHeight) / 2;
+
+    const textGroup = housingGroup.append('text')
+      .attr('x', m.left - 10)
+      .attr('text-anchor', 'end')
+      .attr('font-size', '11px')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0);
+
+    lines.forEach((line, idx) => {
+      textGroup.append('tspan')
+        .attr('x', m.left - 10)
+        .attr('y', textY + idx * lineHeight + 4)
+        .text(line);
+    });
+
+    textGroup.transition().duration(dur).attr('opacity', 1);
+
+    housingGroup.append('text')
+      .attr('x', d.growth >= 0 ? barX + barWidth + 8 : barX - 8)
+      .attr('y', y + barHeight / 2 + 4)
+      .attr('text-anchor', d.growth >= 0 ? 'start' : 'end')
+      .attr('font-size', '13px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0)
+      .text((d.growth >= 0 ? '+' : '') + d.growth.toFixed(2) + '%')
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // Draw zero line (only spanning the bar chart area)
+  const firstBarY = m.top;
+  const lastBarY = m.top + (topBottom.length - 1) * (barHeight + barGap) + barHeight;
+
+  housingGroup.append('line')
+    .attr('x1', zeroX).attr('x2', zeroX)
+    .attr('y1', firstBarY).attr('y2', lastBarY)
+    .attr('stroke', 'var(--text-muted)')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-dasharray', '4,4')
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 0.5);
+}
+
+function renderBig5View(animate = true) {
+  currentView = 'big5';
+  const dur = animate ? 700 : 0;
+
+  // Clear axis and ref
+  housingSVG.select('.axis-group').selectAll('*').remove();
+  housingSVG.select('.ref-group').selectAll('*').remove();
+
+  // Stop simulation
+  if (housingSim) housingSim.stop();
+
+  // Clear existing circles and labels
+  housingGroup.selectAll('*').remove();
+
+  // Get Big 4 + Macquarie
+  const big5Names = [
+    'Commonwealth Bank of Australia',
+    'National Australia Bank Limited',
+    'Australia and New Zealand Banking Group Limited',
+    'Westpac Banking Corporation',
+    'Macquarie Bank Limited'
+  ];
+  const big5Data = housingData.filter(d => big5Names.includes(d.name))
+    .sort((a, b) => b.growth - a.growth);
+
+  // Custom margins for Big5 view to accommodate labels
+  const m = isMobile()
+    ? { top: 50, right: 80, bottom: 60, left: 110 }
+    : { top: 30, right: 80, bottom: 50, left: 120 };
+
+  const chartWidth = housingWidth - m.left - m.right;
+  const chartHeight = housingHeight - m.top - m.bottom;
+  const barHeight = Math.min(60, chartHeight / (big5Data.length + 1));
+  const barGap = 12;
+
+  const maxGrowth = Math.max(...big5Data.map(d => Math.abs(d.growth)));
+  const xScale = d3.scaleLinear()
+    .domain([-maxGrowth, maxGrowth])
+    .range([m.left, housingWidth - m.right]);
+
+  const zeroX = xScale(0);
+
+  // Draw bars
+  big5Data.forEach((d, i) => {
+    const y = m.top + 40 + i * (barHeight + barGap);
+    const barWidth = Math.abs(xScale(d.growth) - zeroX);
+    const barX = d.growth >= 0 ? zeroX : xScale(d.growth);
+    const color = d.growth >= DATA.system_growth ? '#22c55e' : '#ef4444';
+
+    housingGroup.append('rect')
+      .attr('x', zeroX)
+      .attr('y', y)
+      .attr('width', 0)
+      .attr('height', barHeight)
+      .attr('fill', color)
+      .attr('opacity', 0.8)
+      .transition().duration(dur)
+      .attr('x', barX)
+      .attr('width', barWidth);
+
+    housingGroup.append('text')
+      .attr('x', m.left - 10)
+      .attr('y', y + barHeight / 2 + 5)
+      .attr('text-anchor', 'end')
+      .attr('font-size', '13px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0)
+      .text(getShort(d.name))
+      .transition().duration(dur).attr('opacity', 1);
+
+    housingGroup.append('text')
+      .attr('x', d.growth >= 0 ? barX + barWidth + 8 : barX - 8)
+      .attr('y', y + barHeight / 2 + 5)
+      .attr('text-anchor', d.growth >= 0 ? 'start' : 'end')
+      .attr('font-size', '14px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0)
+      .text((d.growth >= 0 ? '+' : '') + d.growth.toFixed(2) + '%')
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // Draw zero line (only spanning the bar chart area)
+  const firstBarY = m.top + 40;
+  const lastBarY = m.top + 40 + (big5Data.length - 1) * (barHeight + barGap) + barHeight;
+
+  housingGroup.append('line')
+    .attr('x1', zeroX).attr('x2', zeroX)
+    .attr('y1', firstBarY).attr('y2', lastBarY)
+    .attr('stroke', 'var(--text-muted)')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-dasharray', '4,4')
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 0.5);
+}
+
+function renderFIView(animate = true) {
+  currentView = 'fi';
+
+  // Clear axis and ref
+  housingSVG.select('.axis-group').selectAll('*').remove();
+  housingSVG.select('.ref-group').selectAll('*').remove();
+
+  // Stop simulation
+  if (housingSim) housingSim.stop();
+
+  // Clear existing circles and labels
+  housingGroup.selectAll('*').remove();
+
+  // Show FI selector if not already populated
+  const selectEl = document.getElementById('bankSelect');
+  if (selectEl.options.length === 0) {
+    const sortedHousing = [...housingData].sort((a, b) => a.name.localeCompare(b.name));
+    sortedHousing.forEach(d => {
+      const option = document.createElement('option');
+      option.value = d.name;
+      option.text = d.name;
+      selectEl.appendChild(option);
+    });
+    // Set default to CBA
+    selectEl.value = 'Commonwealth Bank of Australia';
+  }
+
+  updateFIDetails();
+}
+
+function updateFIDetails() {
+  const selectEl = document.getElementById('bankSelect');
+  const bankName = selectEl.value;
+  const bankData = housingData.find(d => d.name === bankName);
+
+  if (!bankData) return;
+
+  // Clear existing content
+  housingGroup.selectAll('*').remove();
+
+  const m = getMargin();
+
+  // Add institution name as title
+  housingGroup.append('text')
+    .attr('x', m.left + 20)
+    .attr('y', m.top + 30)
+    .attr('font-size', isMobile() ? '16px' : '18px')
+    .attr('font-weight', '700')
+    .attr('fill', 'var(--text-primary)')
+    .text(bankData.name);
+
+  // Create details display
+  const details = [
+    { label: 'Housing Loans (Dec)', value: '$' + (bankData.housingTotal / 1000).toFixed(2) + 'B' },
+    { label: 'Housing Loans (Jun)', value: '$' + (bankData.housingJun / 1000).toFixed(2) + 'B' },
+    { label: 'Market Share', value: bankData.marketShare.toFixed(2) + '%' },
+    { label: '6m Growth', value: (bankData.growth >= 0 ? '+' : '') + bankData.growth.toFixed(2) + '%' },
+    { label: 'System Growth', value: '+' + DATA.system_growth.toFixed(2) + '%' },
+    { label: 'vs System Growth', value: bankData.growth >= DATA.system_growth ? 'Above (+' + (bankData.growth - DATA.system_growth).toFixed(2) + '%)' : 'Below (' + (bankData.growth - DATA.system_growth).toFixed(2) + '%)' }
+  ];
+
+  const lineHeight = 45;
+  const startY = m.top + 70;
+
+  details.forEach((item, i) => {
+    const y = startY + i * lineHeight;
+
+    housingGroup.append('text')
+      .attr('x', m.left + 20)
+      .attr('y', y)
+      .attr('font-size', '13px')
+      .attr('fill', 'var(--text-muted)')
+      .text(item.label);
+
+    housingGroup.append('text')
+      .attr('x', housingWidth - m.right - 20)
+      .attr('y', y)
+      .attr('text-anchor', 'end')
+      .attr('font-size', '14px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .text(item.value);
+
+    // Draw separator line
+    if (i < details.length - 1) {
+      housingGroup.append('line')
+        .attr('x1', m.left + 20)
+        .attr('x2', housingWidth - m.right - 20)
+        .attr('y1', y + lineHeight / 2)
+        .attr('y2', y + lineHeight / 2)
+        .attr('stroke', 'rgba(0,0,0,0.05)')
+        .attr('stroke-width', 1);
+    }
+  });
+}
+
+function switchView(view) {
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-view="${view}"]`).classList.add('active');
+
+  // Stop any running simulation
+  if (housingSim) housingSim.stop();
+
+  // Clear all SVG elements to prevent overlap
+  housingGroup.selectAll('*').remove();
+  housingSVG.select('.axis-group').selectAll('*').remove();
+  housingSVG.select('.ref-group').selectAll('*').remove();
+
+  // Hide/show elements based on view
+  const infoEl = document.getElementById('chartInfo');
+  const fiSelectorEl = document.getElementById('fiSelector');
+
+  infoEl.style.display = 'none';
+  fiSelectorEl.style.display = 'none';
+
+  if (view === 'growth') {
+    infoEl.innerHTML = 'Circle size: <strong style="color: var(--text-primary);">Market Share</strong> · Vertical axis: <strong style="color: var(--text-primary);">6m Growth</strong> · <span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system';
+    infoEl.style.display = 'block';
+    renderGrowthView(true);
+  } else if (view === 'share') {
+    renderShareView(true);
+  } else if (view === 'movers') {
+    infoEl.innerHTML = '<span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system';
+    infoEl.style.display = 'block';
+    renderMoversView(true);
+  } else if (view === 'big5') {
+    infoEl.innerHTML = '<span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system';
+    infoEl.style.display = 'block';
+    renderBig5View(true);
+  } else if (view === 'fi') {
+    fiSelectorEl.style.display = 'block';
+    renderFIView(true);
+  }
+}
+
+// ═══════════════════════════════════════
+// No legend building needed - info is in HTML
+// ═══════════════════════════════════════
+
+// ═══════════════════════════════════════
+// SCROLL / NAV
+// ═══════════════════════════════════════
+let housingAnimated = false;
+
+function handleScroll() {
+  const scrollY = window.scrollY;
+  const navbar = document.getElementById('navbar');
+  navbar.classList.toggle('scrolled', scrollY > 50);
+
+  // Update navbar title based on section
+  const housingSection = document.getElementById('housing');
+  const housingRect = housingSection.getBoundingClientRect();
+  const navLogo = document.querySelector('.nav-logo');
+
+  if (housingRect.top <= 100) {
+    navLogo.innerHTML = 'APRA Market Share <span>/ Housing Loans</span>';
+  } else {
+    navLogo.innerHTML = 'APRA Market Share <span>/ Dashboard</span>';
+  }
+
+  // Trigger housing chart when section in view
+  if (!housingAnimated) {
+    const rect = housingSection.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.7) {
+      housingAnimated = true;
+      // Fade intro circles toward housing section by reducing force
+      if (introSim) {
+        introSim.force('y', d3.forceY(0).strength(0.08));
+        introSim.alpha(0.3).restart();
+        setTimeout(() => introSim.stop(), 1500);
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.addEventListener('scroll', handleScroll, { passive: true });
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  // Debounce resize to avoid excessive recalculations
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    // Recalculate dimensions
+    const container = document.getElementById('housing-chart');
+    // Constrain width on mobile to prevent overflow, with minimum width
+    housingWidth = isMobile()
+      ? Math.max(300, Math.min(container.clientWidth, window.innerWidth - 32))
+      : container.clientWidth;
+    const minHeight = isMobile() ? 450 : 600;
+    const viewportRatio = isMobile() ? 0.6 : 0.7;
+    housingHeight = Math.max(minHeight, window.innerHeight * viewportRatio);
+
+    // Update SVG dimensions
+    housingSVG.attr('width', housingWidth).attr('height', housingHeight);
+
+    // Recalculate radii for responsive sizing
+    housingData.forEach(d => {
+      d.hr = housingRadius(d);
+    });
+
+    // Re-render current view
+    if (currentView === 'share') {
+      renderShareView(false);
+    } else if (currentView === 'growth') {
+      renderGrowthView(false);
+    } else if (currentView === 'movers') {
+      renderMoversView(false);
+    } else if (currentView === 'big5') {
+      renderBig5View(false);
+    } else if (currentView === 'fi') {
+      renderFIView(false);
+    }
+  }, 250);
+});
+
+createIntroChart();
+createHousingChart();
+</script>
+</body>
+</html>
