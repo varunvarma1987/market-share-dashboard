@@ -156,6 +156,27 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 78px;
+  }
+  .deposits-layout {
+    display: flex;
+    gap: 48px;
+    max-width: 1200px;
+    width: 100%;
+    align-items: flex-start;
+  }
+  .deposits-left {
+    flex: 0 0 320px;
+    position: sticky;
+    top: 120px;
+  }
+  .deposits-right {
+    flex: 1;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 78px;
   }
   .section-label {
     font-size: 11px;
@@ -244,6 +265,29 @@
     background: var(--bg);
   }
 
+  /* Dataset Navigation */
+  .dataset-nav-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid var(--text-muted);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .dataset-nav-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+  }
+  .dataset-nav-btn.active {
+    border-color: var(--text-primary);
+    background: var(--text-primary);
+    color: var(--bg);
+  }
+
   /* Chart Info */
   .chart-info {
     font-size: 11px;
@@ -312,14 +356,17 @@
     z-index: 200;
     opacity: 0;
     transition: opacity 0.2s ease;
-    max-width: 260px;
+    max-width: 240px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.2);
   }
   .tooltip .tt-name {
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 6px;
     font-family: 'DM Sans', sans-serif;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.3;
   }
   .tooltip .tt-row {
     display: flex; justify-content: space-between; gap: 16px;
@@ -344,6 +391,22 @@
       position: relative;
       top: 0;
       width: 100%;
+    }
+    .housing-right {
+      padding-top: 0;
+    }
+    .deposits-layout {
+      flex-direction: column;
+      gap: 32px;
+    }
+    .deposits-left {
+      flex: none;
+      position: relative;
+      top: 0;
+      width: 100%;
+    }
+    .deposits-right {
+      padding-top: 0;
     }
     .stat-highlight { flex-direction: row; gap: 12px; }
     .nav-bar { padding: 12px 16px; }
@@ -467,8 +530,13 @@
 <section class="section" id="housing">
   <div class="housing-layout">
     <div class="housing-left">
+      <div class="dataset-nav" style="margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="dataset-nav-btn active" data-dataset="housing" onclick="switchDataset('housing')">Total</button>
+        <button class="dataset-nav-btn" data-dataset="oo" onclick="switchDataset('oo')">Owner Occupier</button>
+        <button class="dataset-nav-btn" data-dataset="inv" onclick="switchDataset('inv')">Investment</button>
+      </div>
       <h2 class="section-title">Housing Loans</h2>
-      <p class="section-description">
+      <p class="section-description" id="section-description">
         Total loans to households for housing, combining <strong>owner-occupied</strong> and <strong>investment</strong> lending. This is the largest category of ADI lending in Australia.
       </p>
       <div class="stat-highlight">
@@ -504,11 +572,68 @@
   </div>
 </section>
 
+<!-- Deposits by Households Section -->
+<section class="section" id="deposits">
+  <div class="deposits-layout">
+    <div class="deposits-left">
+      <h2 class="section-title">Deposits by Households</h2>
+      <p class="section-description">
+        Total household deposits held at Australian ADIs. This represents the savings and transaction account balances of Australian households across the banking system.
+      </p>
+      <div class="stat-highlight">
+        <div class="stat-box">
+          <div class="stat-val" id="deposits-stat-total">$1,713Bn</div>
+          <div class="stat-label">Total Market · Dec 25</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="deposits-stat-growth">+6.59%</div>
+          <div class="stat-label">System Growth · 6m</div>
+        </div>
+      </div>
+      <div class="toggle-legend-row">
+        <div class="view-toggle">
+          <button class="toggle-btn active" data-view="share" onclick="switchDepositsView('share')">Market Share</button>
+          <button class="toggle-btn" data-view="growth" onclick="switchDepositsView('growth')">Growth</button>
+          <button class="toggle-btn" data-view="movers" onclick="switchDepositsView('movers')">Movers</button>
+          <button class="toggle-btn" data-view="big5" onclick="switchDepositsView('big5')">Big 5</button>
+          <button class="toggle-btn" data-view="fi" onclick="switchDepositsView('fi')">FI</button>
+        </div>
+        <div class="chart-info" id="depositsChartInfo" style="display: none;">
+          Circle size: <strong style="color: var(--text-primary);">Market Share</strong> · Vertical axis: <strong style="color: var(--text-primary);">6m Growth</strong> · <span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system
+        </div>
+        <div id="depositsFiSelector" style="display: none;">
+          <select class="fi-selector" id="depositsBankSelect" onchange="updateDepositsFIDetails()">
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="deposits-right">
+      <div id="deposits-chart"></div>
+    </div>
+  </div>
+</section>
+
 <script>
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
-const DATA = {"institutions": [{"name": "Agricultural Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Alex Bank Pty Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "AMP Bank Limited", "housing_total_dec": 22787.1, "housing_total_jun": 22190.300000000003, "market_share": 0.9393, "growth": 2.6895}, {"name": "Arab Bank Australia Limited", "housing_total_dec": 562.0, "housing_total_jun": 579.4000000000001, "market_share": 0.0232, "growth": -3.0031}, {"name": "Australia and New Zealand Banking Group Limited", "housing_total_dec": 321484.6, "housing_total_jun": 317707.2, "market_share": 13.2514, "growth": 1.189}, {"name": "Australian Military Bank Ltd", "housing_total_dec": 1910.0, "housing_total_jun": 1745.3, "market_share": 0.0787, "growth": 9.4368}, {"name": "Australian Mutual Bank Ltd", "housing_total_dec": 1318.6, "housing_total_jun": 1328.2, "market_share": 0.0544, "growth": -0.7228}, {"name": "Australian Settlements Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Avenue Bank Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "B & E Ltd", "housing_total_dec": 1689.0, "housing_total_jun": 1626.7, "market_share": 0.0696, "growth": 3.8298}, {"name": "Bank Australia Limited", "housing_total_dec": 16124.4, "housing_total_jun": 9205.6, "market_share": 0.6646, "growth": 75.1586}, {"name": "Bank of America, National Association", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Baroda", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of China (Australia) Limited", "housing_total_dec": 7674.2, "housing_total_jun": 7082.0, "market_share": 0.3163, "growth": 8.362}, {"name": "Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Communications Co., Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Queensland Limited", "housing_total_dec": 53663.299999999996, "housing_total_jun": 56305.7, "market_share": 2.212, "growth": -4.693}, {"name": "Bank of Sydney Ltd", "housing_total_dec": 1882.9, "housing_total_jun": 1829.5, "market_share": 0.0776, "growth": 2.9188}, {"name": "Bank of Taiwan", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Barclays Bank PLC", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bendigo and Adelaide Bank Limited", "housing_total_dec": 63312.1, "housing_total_jun": 64954.4, "market_share": 2.6097, "growth": -2.5284}, {"name": "Beyond Bank Australia Limited", "housing_total_dec": 9051.0, "housing_total_jun": 8472.2, "market_share": 0.3731, "growth": 6.8318}, {"name": "BNK Banking Corporation Limited", "housing_total_dec": 711.7, "housing_total_jun": 743.1, "market_share": 0.0293, "growth": -4.2255}, {"name": "BNP Paribas", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Canadian Imperial Bank of Commerce", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Central West Credit Union Limited", "housing_total_dec": 146.8, "housing_total_jun": 141.0, "market_share": 0.0061, "growth": 4.1135}, {"name": "China Construction Bank Corporation", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "China Everbright Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "China Merchants Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Citibank, N.A.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Coastline Credit Union Limited", "housing_total_dec": 648.7, "housing_total_jun": 637.0, "market_share": 0.0267, "growth": 1.8367}, {"name": "Commonwealth Bank of Australia", "housing_total_dec": 616445.3, "housing_total_jun": 593663.4, "market_share": 25.4095, "growth": 3.8375}, {"name": "Community First Credit Union Limited", "housing_total_dec": 1837.7, "housing_total_jun": 1745.0, "market_share": 0.0757, "growth": 5.3123}, {"name": "Cooperatieve Rabobank U.A.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Credit Agricole Corporate and Investment Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Credit Union Australia Ltd", "housing_total_dec": 18044.2, "housing_total_jun": 17320.4, "market_share": 0.7438, "growth": 4.1789}, {"name": "Credit Union SA Ltd", "housing_total_dec": 1726.6, "housing_total_jun": 1626.9, "market_share": 0.0712, "growth": 6.1282}, {"name": "Cuscal Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "DBS Bank Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Defence Bank Limited", "housing_total_dec": 3635.0, "housing_total_jun": 3471.3999999999996, "market_share": 0.1498, "growth": 4.7128}, {"name": "Deutsche Bank Aktiengesellschaft", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Dnister Ukrainian Credit Co-operative Limited", "housing_total_dec": 207.7, "housing_total_jun": 192.10000000000002, "market_share": 0.0086, "growth": 8.1208}, {"name": "E.SUN Commercial Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Family First Credit Union Limited", "housing_total_dec": 214.5, "housing_total_jun": 211.10000000000002, "market_share": 0.0088, "growth": 1.6106}, {"name": "First Commercial Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "First Option Bank Ltd", "housing_total_dec": 244.7, "housing_total_jun": 236.89999999999998, "market_share": 0.0101, "growth": 3.2925}, {"name": "Gateway Bank Ltd", "housing_total_dec": 1095.7, "housing_total_jun": 1123.0, "market_share": 0.0452, "growth": -2.431}, {"name": "Goulburn Murray Credit Union Co-operative Limited", "housing_total_dec": 376.6, "housing_total_jun": 355.8, "market_share": 0.0155, "growth": 5.846}, {"name": "Heartland Bank Australia Limited", "housing_total_dec": 208.8, "housing_total_jun": 168.0, "market_share": 0.0086, "growth": 24.2857}, {"name": "Heritage and People's Choice Limited", "housing_total_dec": 20800.4, "housing_total_jun": 19979.4, "market_share": 0.8574, "growth": 4.1092}, {"name": "Horizon Credit Union Ltd", "housing_total_dec": 508.2, "housing_total_jun": 487.7, "market_share": 0.0209, "growth": 4.2034}, {"name": "HSBC Bank Australia Limited", "housing_total_dec": 34739.100000000006, "housing_total_jun": 33220.1, "market_share": 1.4319, "growth": 4.5725}, {"name": "Hua Nan Commercial Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Hume Bank Limited", "housing_total_dec": 1536.2, "housing_total_jun": 1559.3000000000002, "market_share": 0.0633, "growth": -1.4814}, {"name": "IMB Ltd", "housing_total_dec": 6467.9, "housing_total_jun": 6040.700000000001, "market_share": 0.2666, "growth": 7.072}, {"name": "IN1Bank Ltd", "housing_total_dec": 2.8, "housing_total_jun": 2.5, "market_share": 0.0001, "growth": 12.0}, {"name": "Indue Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Industrial and Commercial Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "ING Bank (Australia) Limited", "housing_total_dec": 71710.5, "housing_total_jun": 66471.8, "market_share": 2.9559, "growth": 7.8811}, {"name": "ING Bank N.V.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Intesa Sanpaolo SPA", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "JPMorgan Chase Bank, National Association", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Judo Bank Pty Ltd", "housing_total_dec": 1170.9, "housing_total_jun": 1156.9, "market_share": 0.0483, "growth": 1.2101}, {"name": "KEB HANA Bank", "housing_total_dec": 4.9, "housing_total_jun": 4.9, "market_share": 0.0002, "growth": 0.0}, {"name": "Laboratories Credit Union Limited", "housing_total_dec": 247.20000000000002, "housing_total_jun": 242.7, "market_share": 0.0102, "growth": 1.8541}, {"name": "Land Bank of Taiwan Co., Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Macarthur Credit Union Ltd", "housing_total_dec": 265.3, "housing_total_jun": 258.5, "market_share": 0.0109, "growth": 2.6306}, {"name": "Macquarie Bank Limited", "housing_total_dec": 164695.9, "housing_total_jun": 144530.9, "market_share": 6.7887, "growth": 13.952}, {"name": "Maitland Mutual Limited", "housing_total_dec": 837.3, "housing_total_jun": 834.5, "market_share": 0.0345, "growth": 0.3355}, {"name": "Mega International Commercial Bank Co., Ltd.", "housing_total_dec": 9.7, "housing_total_jun": 10.399999999999999, "market_share": 0.0004, "growth": -6.7308}, {"name": "Members Banking Group Limited", "housing_total_dec": 2602.0, "housing_total_jun": 2551.1, "market_share": 0.1073, "growth": 1.9952}, {"name": "Mizuho Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "MUFG Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "MyState Bank Limited", "housing_total_dec": 10560.8, "housing_total_jun": 6234.5, "market_share": 0.4353, "growth": 69.3929}, {"name": "National Australia Bank Limited", "housing_total_dec": 343666.4, "housing_total_jun": 334662.2, "market_share": 14.1657, "growth": 2.6905}, {"name": "Newcastle Greater Mutual Group Ltd", "housing_total_dec": 18490.5, "housing_total_jun": 17531.7, "market_share": 0.7622, "growth": 5.469}, {"name": "Nonghyup Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Suncorp", "housing_total_dec": 57442.6, "housing_total_jun": 56515.6, "market_share": 2.3677, "growth": 1.6403}, {"name": "Northern Inland Credit Union Limited", "housing_total_dec": 317.1, "housing_total_jun": 308.1, "market_share": 0.0131, "growth": 2.9211}, {"name": "Orange Credit Union Limited", "housing_total_dec": 209.7, "housing_total_jun": 214.3, "market_share": 0.0086, "growth": -2.1465}, {"name": "Oversea-Chinese Banking Corporation Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "PayPal Australia Pty Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Police & Nurses Limited", "housing_total_dec": 7580.700000000001, "housing_total_jun": 7258.7, "market_share": 0.3125, "growth": 4.4361}, {"name": "Police Bank Ltd", "housing_total_dec": 2265.4, "housing_total_jun": 2149.8, "market_share": 0.0934, "growth": 5.3772}, {"name": "Police Credit Union Limited", "housing_total_dec": 989.5, "housing_total_jun": 912.8, "market_share": 0.0408, "growth": 8.4027}, {"name": "Police Financial Services Limited", "housing_total_dec": 2934.4, "housing_total_jun": 2737.2999999999997, "market_share": 0.121, "growth": 7.2005}, {"name": "QPCU Limited", "housing_total_dec": 877.1999999999999, "housing_total_jun": 838.5999999999999, "market_share": 0.0362, "growth": 4.6029}, {"name": "Queensland Country Bank Limited", "housing_total_dec": 2998.7000000000003, "housing_total_jun": 2844.5, "market_share": 0.1236, "growth": 5.421}, {"name": "Rabobank Australia Limited", "housing_total_dec": 213.6, "housing_total_jun": 227.10000000000002, "market_share": 0.0088, "growth": -5.9445}, {"name": "Railways Credit Union Limited", "housing_total_dec": 783.4, "housing_total_jun": 731.6, "market_share": 0.0323, "growth": 7.0804}, {"name": "Regional Australia Bank Ltd", "housing_total_dec": 2981.2, "housing_total_jun": 2819.2999999999997, "market_share": 0.1229, "growth": 5.7426}, {"name": "Royal Bank of Canada", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Shinhan Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Societe Generale", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "South West Slopes Credit Union Ltd", "housing_total_dec": 155.2, "housing_total_jun": 158.3, "market_share": 0.0064, "growth": -1.9583}, {"name": "Southern Cross Credit Union Ltd", "housing_total_dec": 770.9, "housing_total_jun": 753.7, "market_share": 0.0318, "growth": 2.2821}, {"name": "Standard Chartered Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "State Bank of India", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "State Street Bank and Trust Company", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Sumitomo Mitsui Banking Corporation", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Summerland Financial Services Limited", "housing_total_dec": 903.2, "housing_total_jun": 869.9, "market_share": 0.0372, "growth": 3.828}, {"name": "Taishin International Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Taiwan Business Bank, Ltd", "housing_total_dec": 14.3, "housing_total_jun": 15.0, "market_share": 0.0006, "growth": -4.6667}, {"name": "Taiwan Cooperative Bank, Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Teachers Mutual Bank Limited", "housing_total_dec": 9734.0, "housing_total_jun": 9105.2, "market_share": 0.4012, "growth": 6.9059}, {"name": "The Bank of New York Mellon", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Bank of Nova Scotia", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Capricornian Ltd", "housing_total_dec": 366.0, "housing_total_jun": 306.4, "market_share": 0.0151, "growth": 19.4517}, {"name": "The Hongkong and Shanghai Banking Corporation Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Northern Trust Company", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Tyro Payments Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "UBS AG", "housing_total_dec": 250.0, "housing_total_jun": 294.3, "market_share": 0.0103, "growth": -15.0527}, {"name": "Union Bank of India", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "United Overseas Bank Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Unity Bank Limited", "housing_total_dec": 2360.0, "housing_total_jun": 0, "market_share": 0.0973, "growth": 0}, {"name": "Victoria Teachers Limited", "housing_total_dec": 3220.5, "housing_total_jun": 3081.0, "market_share": 0.1327, "growth": 4.5278}, {"name": "Warwick Credit Union Ltd", "housing_total_dec": 360.8, "housing_total_jun": 349.1, "market_share": 0.0149, "growth": 3.3515}, {"name": "WAW Credit Union Co-Operative Limited", "housing_total_dec": 490.40000000000003, "housing_total_jun": 496.6, "market_share": 0.0202, "growth": -1.2485}, {"name": "Westpac Banking Corporation", "housing_total_dec": 502506.5, "housing_total_jun": 487935.5, "market_share": 20.713, "growth": 2.9863}, {"name": "Wise Australia Pty Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Woori Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}], "all_institutions": [{"name": "Agricultural Bank of China Limited", "total_assets": 8973.5, "housing_total": 0}, {"name": "Alex Bank Pty Ltd", "total_assets": 60.6, "housing_total": 0}, {"name": "AMP Bank Limited", "total_assets": 33572.4, "housing_total": 22787.1}, {"name": "Arab Bank Australia Limited", "total_assets": 1406.2, "housing_total": 562.0}, {"name": "Australia and New Zealand Banking Group Limited", "total_assets": 751883.6, "housing_total": 321484.6}, {"name": "Australian Military Bank Ltd", "total_assets": 2695.9, "housing_total": 1910.0}, {"name": "Australian Mutual Bank Ltd", "total_assets": 2243.4, "housing_total": 1318.6}, {"name": "Australian Settlements Limited", "total_assets": 582.4, "housing_total": 0}, {"name": "Avenue Bank Ltd", "total_assets": 67.9, "housing_total": 0}, {"name": "B & E Ltd", "total_assets": 2836.6, "housing_total": 1689.0}, {"name": "Bank Australia Limited", "total_assets": 23404.9, "housing_total": 16124.4}, {"name": "Bank of America, National Association", "total_assets": 38915.5, "housing_total": 0}, {"name": "Bank of Baroda", "total_assets": 1001.7, "housing_total": 0}, {"name": "Bank of China (Australia) Limited", "total_assets": 9679.7, "housing_total": 7674.2}, {"name": "Bank of China Limited", "total_assets": 35807.9, "housing_total": 0}, {"name": "Bank of Communications Co., Ltd.", "total_assets": 10955.8, "housing_total": 0}, {"name": "Bank of Queensland Limited", "total_assets": 115935.8, "housing_total": 53663.299999999996}, {"name": "Bank of Sydney Ltd", "total_assets": 4378.9, "housing_total": 1882.9}, {"name": "Bank of Taiwan", "total_assets": 1015.7, "housing_total": 0}, {"name": "Barclays Bank PLC", "total_assets": 1095.4, "housing_total": 0}, {"name": "Bendigo and Adelaide Bank Limited", "total_assets": 111675.5, "housing_total": 63312.1}, {"name": "Beyond Bank Australia Limited", "total_assets": 15654.3, "housing_total": 9051.0}, {"name": "BNK Banking Corporation Limited", "total_assets": 1242.7, "housing_total": 711.7}, {"name": "BNP Paribas", "total_assets": 21157.0, "housing_total": 0}, {"name": "Canadian Imperial Bank of Commerce", "total_assets": 3933.5, "housing_total": 0}, {"name": "Central West Credit Union Limited", "total_assets": 309.8, "housing_total": 146.8}, {"name": "China Construction Bank Corporation", "total_assets": 11984.3, "housing_total": 0}, {"name": "China Everbright Bank Co., Ltd", "total_assets": 7968.9, "housing_total": 0}, {"name": "China Merchants Bank Co., Ltd", "total_assets": 1790.2, "housing_total": 0}, {"name": "Citibank, N.A.", "total_assets": 20041.7, "housing_total": 0}, {"name": "Coastline Credit Union Limited", "total_assets": 950.7, "housing_total": 648.7}, {"name": "Commonwealth Bank of Australia", "total_assets": 1192189.6, "housing_total": 616445.3}, {"name": "Community First Credit Union Limited", "total_assets": 3658.1, "housing_total": 1837.7}, {"name": "Cooperatieve Rabobank U.A.", "total_assets": 24035.7, "housing_total": 0}, {"name": "Credit Agricole Corporate and Investment Bank", "total_assets": 9136.3, "housing_total": 0}, {"name": "Credit Union Australia Ltd", "total_assets": 24619.4, "housing_total": 18044.2}, {"name": "Credit Union SA Ltd", "total_assets": 2467.5, "housing_total": 1726.6}, {"name": "Cuscal Limited", "total_assets": 4412.2, "housing_total": 0}, {"name": "DBS Bank Ltd", "total_assets": 17940.0, "housing_total": 0}, {"name": "Defence Bank Limited", "total_assets": 5130.1, "housing_total": 3635.0}, {"name": "Deutsche Bank Aktiengesellschaft", "total_assets": 17236.3, "housing_total": 0}, {"name": "Dnister Ukrainian Credit Co-operative Limited", "total_assets": 291.2, "housing_total": 207.7}, {"name": "E.SUN Commercial Bank, Ltd.", "total_assets": 3971.2, "housing_total": 0}, {"name": "Family First Credit Union Limited", "total_assets": 261.5, "housing_total": 214.5}, {"name": "First Commercial Bank", "total_assets": 2978.4, "housing_total": 0}, {"name": "First Option Bank Ltd", "total_assets": 318.7, "housing_total": 244.7}, {"name": "Gateway Bank Ltd", "total_assets": 1955.2, "housing_total": 1095.7}, {"name": "Goulburn Murray Credit Union Co-operative Limited", "total_assets": 614.0, "housing_total": 376.6}, {"name": "Heartland Bank Australia Limited", "total_assets": 3146.3, "housing_total": 208.8}, {"name": "Heritage and People's Choice Limited", "total_assets": 28434.2, "housing_total": 20800.4}, {"name": "Horizon Credit Union Ltd", "total_assets": 789.0, "housing_total": 508.2}, {"name": "HSBC Bank Australia Limited", "total_assets": 66394.9, "housing_total": 34739.100000000006}, {"name": "Hua Nan Commercial Bank, Ltd.", "total_assets": 1571.4, "housing_total": 0}, {"name": "Hume Bank Limited", "total_assets": 2586.0, "housing_total": 1536.2}, {"name": "IMB Ltd", "total_assets": 10656.0, "housing_total": 6467.9}, {"name": "IN1Bank Ltd", "total_assets": 31.6, "housing_total": 2.8}, {"name": "Indue Ltd", "total_assets": 893.6, "housing_total": 0}, {"name": "Industrial and Commercial Bank of China Limited", "total_assets": 17888.2, "housing_total": 0}, {"name": "ING Bank (Australia) Limited", "total_assets": 113887.3, "housing_total": 71710.5}, {"name": "ING Bank N.V.", "total_assets": 19318.5, "housing_total": 0}, {"name": "Intesa Sanpaolo SPA", "total_assets": 3254.0, "housing_total": 0}, {"name": "JPMorgan Chase Bank, National Association", "total_assets": 23723.4, "housing_total": 0}, {"name": "Judo Bank Pty Ltd", "total_assets": 19200.4, "housing_total": 1170.9}, {"name": "KEB HANA Bank", "total_assets": 971.6, "housing_total": 4.9}, {"name": "Laboratories Credit Union Limited", "total_assets": 306.7, "housing_total": 247.20000000000002}, {"name": "Land Bank of Taiwan Co., Ltd.", "total_assets": 260.3, "housing_total": 0}, {"name": "Macarthur Credit Union Ltd", "total_assets": 400.4, "housing_total": 265.3}, {"name": "Macquarie Bank Limited", "total_assets": 321639.4, "housing_total": 164695.9}, {"name": "Maitland Mutual Limited", "total_assets": 1427.2, "housing_total": 837.3}, {"name": "Mega International Commercial Bank Co., Ltd.", "total_assets": 3941.9, "housing_total": 9.7}, {"name": "Members Banking Group Limited", "total_assets": 3784.7, "housing_total": 2602.0}, {"name": "Mizuho Bank, Ltd.", "total_assets": 27512.3, "housing_total": 0}, {"name": "MUFG Bank, Ltd.", "total_assets": 32802.9, "housing_total": 0}, {"name": "MyState Bank Limited", "total_assets": 15154.4, "housing_total": 10560.8}, {"name": "National Australia Bank Limited", "total_assets": 982677.2, "housing_total": 343666.4}, {"name": "Newcastle Greater Mutual Group Ltd", "total_assets": 26790.6, "housing_total": 18490.5}, {"name": "Nonghyup Bank", "total_assets": 278.9, "housing_total": 0}, {"name": "Suncorp", "total_assets": 95345.0, "housing_total": 57442.6}, {"name": "Northern Inland Credit Union Limited", "total_assets": 478.5, "housing_total": 317.1}, {"name": "Orange Credit Union Limited", "total_assets": 331.7, "housing_total": 209.7}, {"name": "Oversea-Chinese Banking Corporation Limited", "total_assets": 19052.8, "housing_total": 0}, {"name": "PayPal Australia Pty Limited", "total_assets": 1801.2, "housing_total": 0}, {"name": "Police & Nurses Limited", "total_assets": 11154.1, "housing_total": 7580.700000000001}, {"name": "Police Bank Ltd", "total_assets": 3450.1, "housing_total": 2265.4}, {"name": "Police Credit Union Limited", "total_assets": 1537.4, "housing_total": 989.5}, {"name": "Police Financial Services Limited", "total_assets": 4170.5, "housing_total": 2934.4}, {"name": "QPCU Limited", "total_assets": 1356.8, "housing_total": 877.1999999999999}, {"name": "Queensland Country Bank Limited", "total_assets": 4442.0, "housing_total": 2998.7000000000003}, {"name": "Rabobank Australia Limited", "total_assets": 27956.9, "housing_total": 213.6}, {"name": "Railways Credit Union Limited", "total_assets": 1082.3, "housing_total": 783.4}, {"name": "Regional Australia Bank Ltd", "total_assets": 4742.2, "housing_total": 2981.2}, {"name": "Royal Bank of Canada", "total_assets": 22029.9, "housing_total": 0}, {"name": "Shinhan Bank Co., Ltd", "total_assets": 1132.4, "housing_total": 0}, {"name": "Societe Generale", "total_assets": 6185.5, "housing_total": 0}, {"name": "South West Slopes Credit Union Ltd", "total_assets": 328.7, "housing_total": 155.2}, {"name": "Southern Cross Credit Union Ltd", "total_assets": 1055.1, "housing_total": 770.9}, {"name": "Standard Chartered Bank", "total_assets": 5124.2, "housing_total": 0}, {"name": "State Bank of India", "total_assets": 2052.3, "housing_total": 0}, {"name": "State Street Bank and Trust Company", "total_assets": 6876.4, "housing_total": 0}, {"name": "Sumitomo Mitsui Banking Corporation", "total_assets": 42344.4, "housing_total": 0}, {"name": "Summerland Financial Services Limited", "total_assets": 1215.8, "housing_total": 903.2}, {"name": "Taishin International Bank Co., Ltd", "total_assets": 1621.6, "housing_total": 0}, {"name": "Taiwan Business Bank, Ltd", "total_assets": 2114.2, "housing_total": 14.3}, {"name": "Taiwan Cooperative Bank, Ltd", "total_assets": 1295.3, "housing_total": 0}, {"name": "Teachers Mutual Bank Limited", "total_assets": 13475.6, "housing_total": 9734.0}, {"name": "The Bank of New York Mellon", "total_assets": 54.4, "housing_total": 0}, {"name": "The Bank of Nova Scotia", "total_assets": 923.3, "housing_total": 0}, {"name": "The Capricornian Ltd", "total_assets": 459.9, "housing_total": 366.0}, {"name": "The Hongkong and Shanghai Banking Corporation Limited", "total_assets": 37447.1, "housing_total": 0}, {"name": "The Northern Trust Company", "total_assets": 3744.1, "housing_total": 0}, {"name": "Tyro Payments Limited", "total_assets": 483.3, "housing_total": 0}, {"name": "UBS AG", "total_assets": 20642.4, "housing_total": 250.0}, {"name": "Union Bank of India", "total_assets": 524.4, "housing_total": 0}, {"name": "United Overseas Bank Limited", "total_assets": 21617.8, "housing_total": 0}, {"name": "Unity Bank Limited", "total_assets": 4612.0, "housing_total": 2360.0}, {"name": "Victoria Teachers Limited", "total_assets": 4682.1, "housing_total": 3220.5}, {"name": "Warwick Credit Union Ltd", "total_assets": 569.7, "housing_total": 360.8}, {"name": "WAW Credit Union Co-Operative Limited", "total_assets": 744.6, "housing_total": 490.40000000000003}, {"name": "Westpac Banking Corporation", "total_assets": 1117245.6, "housing_total": 502506.5}, {"name": "Wise Australia Pty Ltd", "total_assets": 2320.5, "housing_total": 0}, {"name": "Woori Bank", "total_assets": 645.9, "housing_total": 0}], "total_market_dec": 2426044.5, "total_market_jun": 2344265.0, "system_growth": 3.4885};
+const DATA = {"institutions": [{"name": "Agricultural Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Alex Bank Pty Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "AMP Bank Limited", "housing_total_dec": 22787.1, "housing_total_jun": 22190.300000000003, "market_share": 0.9393, "growth": 2.6895}, {"name": "Arab Bank Australia Limited", "housing_total_dec": 562.0, "housing_total_jun": 579.4000000000001, "market_share": 0.0232, "growth": -3.0031}, {"name": "Australia and New Zealand Banking Group Limited", "housing_total_dec": 321484.6, "housing_total_jun": 317707.2, "market_share": 13.2514, "growth": 1.189}, {"name": "Australian Military Bank Ltd", "housing_total_dec": 1910.0, "housing_total_jun": 1745.3, "market_share": 0.0787, "growth": 9.4368}, {"name": "Australian Mutual Bank Ltd", "housing_total_dec": 1318.6, "housing_total_jun": 1328.2, "market_share": 0.0544, "growth": -0.7228}, {"name": "Australian Settlements Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Avenue Bank Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "B & E Ltd", "housing_total_dec": 1689.0, "housing_total_jun": 1626.7, "market_share": 0.0696, "growth": 3.8298}, {"name": "Bank Australia Limited", "housing_total_dec": 16124.4, "housing_total_jun": 9205.6, "market_share": 0.6646, "growth": 75.1586}, {"name": "Bank of America, National Association", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Baroda", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of China (Australia) Limited", "housing_total_dec": 7674.2, "housing_total_jun": 7082.0, "market_share": 0.3163, "growth": 8.362}, {"name": "Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Communications Co., Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bank of Queensland Limited", "housing_total_dec": 53663.299999999996, "housing_total_jun": 56305.7, "market_share": 2.212, "growth": -4.693}, {"name": "Bank of Sydney Ltd", "housing_total_dec": 1882.9, "housing_total_jun": 1829.5, "market_share": 0.0776, "growth": 2.9188}, {"name": "Bank of Taiwan", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Barclays Bank PLC", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Bendigo and Adelaide Bank Limited", "housing_total_dec": 63312.1, "housing_total_jun": 64954.4, "market_share": 2.6097, "growth": -2.5284}, {"name": "Beyond Bank Australia Limited", "housing_total_dec": 9051.0, "housing_total_jun": 8472.2, "market_share": 0.3731, "growth": 6.8318}, {"name": "BNK Banking Corporation Limited", "housing_total_dec": 711.7, "housing_total_jun": 743.1, "market_share": 0.0293, "growth": -4.2255}, {"name": "BNP Paribas", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Canadian Imperial Bank of Commerce", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Central West Credit Union Limited", "housing_total_dec": 146.8, "housing_total_jun": 141.0, "market_share": 0.0061, "growth": 4.1135}, {"name": "China Construction Bank Corporation", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "China Everbright Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "China Merchants Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Citibank, N.A.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Coastline Credit Union Limited", "housing_total_dec": 648.7, "housing_total_jun": 637.0, "market_share": 0.0267, "growth": 1.8367}, {"name": "Commonwealth Bank of Australia", "housing_total_dec": 616445.3, "housing_total_jun": 593663.4, "market_share": 25.4095, "growth": 3.8375}, {"name": "Community First Credit Union Limited", "housing_total_dec": 1837.7, "housing_total_jun": 1745.0, "market_share": 0.0757, "growth": 5.3123}, {"name": "Cooperatieve Rabobank U.A.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Credit Agricole Corporate and Investment Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Credit Union Australia Ltd", "housing_total_dec": 18044.2, "housing_total_jun": 17320.4, "market_share": 0.7438, "growth": 4.1789}, {"name": "Credit Union SA Ltd", "housing_total_dec": 1726.6, "housing_total_jun": 1626.9, "market_share": 0.0712, "growth": 6.1282}, {"name": "Cuscal Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "DBS Bank Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Defence Bank Limited", "housing_total_dec": 3635.0, "housing_total_jun": 3471.3999999999996, "market_share": 0.1498, "growth": 4.7128}, {"name": "Deutsche Bank Aktiengesellschaft", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Dnister Ukrainian Credit Co-operative Limited", "housing_total_dec": 207.7, "housing_total_jun": 192.10000000000002, "market_share": 0.0086, "growth": 8.1208}, {"name": "E.SUN Commercial Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Family First Credit Union Limited", "housing_total_dec": 214.5, "housing_total_jun": 211.10000000000002, "market_share": 0.0088, "growth": 1.6106}, {"name": "First Commercial Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "First Option Bank Ltd", "housing_total_dec": 244.7, "housing_total_jun": 236.89999999999998, "market_share": 0.0101, "growth": 3.2925}, {"name": "Gateway Bank Ltd", "housing_total_dec": 1095.7, "housing_total_jun": 1123.0, "market_share": 0.0452, "growth": -2.431}, {"name": "Goulburn Murray Credit Union Co-operative Limited", "housing_total_dec": 376.6, "housing_total_jun": 355.8, "market_share": 0.0155, "growth": 5.846}, {"name": "Heartland Bank Australia Limited", "housing_total_dec": 208.8, "housing_total_jun": 168.0, "market_share": 0.0086, "growth": 24.2857}, {"name": "Heritage and People's Choice Limited", "housing_total_dec": 20800.4, "housing_total_jun": 19979.4, "market_share": 0.8574, "growth": 4.1092}, {"name": "Horizon Credit Union Ltd", "housing_total_dec": 508.2, "housing_total_jun": 487.7, "market_share": 0.0209, "growth": 4.2034}, {"name": "HSBC Bank Australia Limited", "housing_total_dec": 34739.100000000006, "housing_total_jun": 33220.1, "market_share": 1.4319, "growth": 4.5725}, {"name": "Hua Nan Commercial Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Hume Bank Limited", "housing_total_dec": 1536.2, "housing_total_jun": 1559.3000000000002, "market_share": 0.0633, "growth": -1.4814}, {"name": "IMB Ltd", "housing_total_dec": 6467.9, "housing_total_jun": 6040.700000000001, "market_share": 0.2666, "growth": 7.072}, {"name": "IN1Bank Ltd", "housing_total_dec": 2.8, "housing_total_jun": 2.5, "market_share": 0.0001, "growth": 12.0}, {"name": "Indue Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Industrial and Commercial Bank of China Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "ING Bank (Australia) Limited", "housing_total_dec": 71710.5, "housing_total_jun": 66471.8, "market_share": 2.9559, "growth": 7.8811}, {"name": "ING Bank N.V.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Intesa Sanpaolo SPA", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "JPMorgan Chase Bank, National Association", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Judo Bank Pty Ltd", "housing_total_dec": 1170.9, "housing_total_jun": 1156.9, "market_share": 0.0483, "growth": 1.2101}, {"name": "KEB HANA Bank", "housing_total_dec": 4.9, "housing_total_jun": 4.9, "market_share": 0.0002, "growth": 0.0}, {"name": "Laboratories Credit Union Limited", "housing_total_dec": 247.20000000000002, "housing_total_jun": 242.7, "market_share": 0.0102, "growth": 1.8541}, {"name": "Land Bank of Taiwan Co., Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Macarthur Credit Union Ltd", "housing_total_dec": 265.3, "housing_total_jun": 258.5, "market_share": 0.0109, "growth": 2.6306}, {"name": "Macquarie Bank Limited", "housing_total_dec": 164695.9, "housing_total_jun": 144530.9, "market_share": 6.7887, "growth": 13.952}, {"name": "Maitland Mutual Limited", "housing_total_dec": 837.3, "housing_total_jun": 834.5, "market_share": 0.0345, "growth": 0.3355}, {"name": "Mega International Commercial Bank Co., Ltd.", "housing_total_dec": 9.7, "housing_total_jun": 10.399999999999999, "market_share": 0.0004, "growth": -6.7308}, {"name": "Members Banking Group Limited", "housing_total_dec": 2602.0, "housing_total_jun": 2551.1, "market_share": 0.1073, "growth": 1.9952}, {"name": "Mizuho Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "MUFG Bank, Ltd.", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "MyState Bank Limited", "housing_total_dec": 10560.8, "housing_total_jun": 6234.5, "market_share": 0.4353, "growth": 69.3929}, {"name": "National Australia Bank Limited", "housing_total_dec": 343666.4, "housing_total_jun": 334662.2, "market_share": 14.1657, "growth": 2.6905}, {"name": "Newcastle Greater Mutual Group Ltd", "housing_total_dec": 18490.5, "housing_total_jun": 17531.7, "market_share": 0.7622, "growth": 5.469}, {"name": "Nonghyup Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Sun", "housing_total_dec": 57442.6, "housing_total_jun": 56515.6, "market_share": 2.3677, "growth": 1.6403}, {"name": "Northern Inland Credit Union Limited", "housing_total_dec": 317.1, "housing_total_jun": 308.1, "market_share": 0.0131, "growth": 2.9211}, {"name": "Orange Credit Union Limited", "housing_total_dec": 209.7, "housing_total_jun": 214.3, "market_share": 0.0086, "growth": -2.1465}, {"name": "Oversea-Chinese Banking Corporation Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "PayPal Australia Pty Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Police & Nurses Limited", "housing_total_dec": 7580.700000000001, "housing_total_jun": 7258.7, "market_share": 0.3125, "growth": 4.4361}, {"name": "Police Bank Ltd", "housing_total_dec": 2265.4, "housing_total_jun": 2149.8, "market_share": 0.0934, "growth": 5.3772}, {"name": "Police Credit Union Limited", "housing_total_dec": 989.5, "housing_total_jun": 912.8, "market_share": 0.0408, "growth": 8.4027}, {"name": "Police Financial Services Limited", "housing_total_dec": 2934.4, "housing_total_jun": 2737.2999999999997, "market_share": 0.121, "growth": 7.2005}, {"name": "QPCU Limited", "housing_total_dec": 877.1999999999999, "housing_total_jun": 838.5999999999999, "market_share": 0.0362, "growth": 4.6029}, {"name": "Queensland Country Bank Limited", "housing_total_dec": 2998.7000000000003, "housing_total_jun": 2844.5, "market_share": 0.1236, "growth": 5.421}, {"name": "Rabobank Australia Limited", "housing_total_dec": 213.6, "housing_total_jun": 227.10000000000002, "market_share": 0.0088, "growth": -5.9445}, {"name": "Railways Credit Union Limited", "housing_total_dec": 783.4, "housing_total_jun": 731.6, "market_share": 0.0323, "growth": 7.0804}, {"name": "Regional Australia Bank Ltd", "housing_total_dec": 2981.2, "housing_total_jun": 2819.2999999999997, "market_share": 0.1229, "growth": 5.7426}, {"name": "Royal Bank of Canada", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Shinhan Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Societe Generale", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "South West Slopes Credit Union Ltd", "housing_total_dec": 155.2, "housing_total_jun": 158.3, "market_share": 0.0064, "growth": -1.9583}, {"name": "Southern Cross Credit Union Ltd", "housing_total_dec": 770.9, "housing_total_jun": 753.7, "market_share": 0.0318, "growth": 2.2821}, {"name": "Standard Chartered Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "State Bank of India", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "State Street Bank and Trust Company", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Sumitomo Mitsui Banking Corporation", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Summerland Financial Services Limited", "housing_total_dec": 903.2, "housing_total_jun": 869.9, "market_share": 0.0372, "growth": 3.828}, {"name": "Taishin International Bank Co., Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Taiwan Business Bank, Ltd", "housing_total_dec": 14.3, "housing_total_jun": 15.0, "market_share": 0.0006, "growth": -4.6667}, {"name": "Taiwan Cooperative Bank, Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Teachers Mutual Bank Limited", "housing_total_dec": 9734.0, "housing_total_jun": 9105.2, "market_share": 0.4012, "growth": 6.9059}, {"name": "The Bank of New York Mellon", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Bank of Nova Scotia", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Capricornian Ltd", "housing_total_dec": 366.0, "housing_total_jun": 306.4, "market_share": 0.0151, "growth": 19.4517}, {"name": "The Hongkong and Shanghai Banking Corporation Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "The Northern Trust Company", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Tyro Payments Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "UBS AG", "housing_total_dec": 250.0, "housing_total_jun": 294.3, "market_share": 0.0103, "growth": -15.0527}, {"name": "Union Bank of India", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "United Overseas Bank Limited", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Unity Bank Limited", "housing_total_dec": 2360.0, "housing_total_jun": 0, "market_share": 0.0973, "growth": 0}, {"name": "Victoria Teachers Limited", "housing_total_dec": 3220.5, "housing_total_jun": 3081.0, "market_share": 0.1327, "growth": 4.5278}, {"name": "Warwick Credit Union Ltd", "housing_total_dec": 360.8, "housing_total_jun": 349.1, "market_share": 0.0149, "growth": 3.3515}, {"name": "WAW Credit Union Co-Operative Limited", "housing_total_dec": 490.40000000000003, "housing_total_jun": 496.6, "market_share": 0.0202, "growth": -1.2485}, {"name": "Westpac Banking Corporation", "housing_total_dec": 502506.5, "housing_total_jun": 487935.5, "market_share": 20.713, "growth": 2.9863}, {"name": "Wise Australia Pty Ltd", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}, {"name": "Woori Bank", "housing_total_dec": 0, "housing_total_jun": 0, "market_share": 0.0, "growth": 0}], "all_institutions": [{"name": "Agricultural Bank of China Limited", "total_assets": 8973.5, "housing_total": 0}, {"name": "Alex Bank Pty Ltd", "total_assets": 60.6, "housing_total": 0}, {"name": "AMP Bank Limited", "total_assets": 33572.4, "housing_total": 22787.1}, {"name": "Arab Bank Australia Limited", "total_assets": 1406.2, "housing_total": 562.0}, {"name": "Australia and New Zealand Banking Group Limited", "total_assets": 751883.6, "housing_total": 321484.6}, {"name": "Australian Military Bank Ltd", "total_assets": 2695.9, "housing_total": 1910.0}, {"name": "Australian Mutual Bank Ltd", "total_assets": 2243.4, "housing_total": 1318.6}, {"name": "Australian Settlements Limited", "total_assets": 582.4, "housing_total": 0}, {"name": "Avenue Bank Ltd", "total_assets": 67.9, "housing_total": 0}, {"name": "B & E Ltd", "total_assets": 2836.6, "housing_total": 1689.0}, {"name": "Bank Australia Limited", "total_assets": 23404.9, "housing_total": 16124.4}, {"name": "Bank of America, National Association", "total_assets": 38915.5, "housing_total": 0}, {"name": "Bank of Baroda", "total_assets": 1001.7, "housing_total": 0}, {"name": "Bank of China (Australia) Limited", "total_assets": 9679.7, "housing_total": 7674.2}, {"name": "Bank of China Limited", "total_assets": 35807.9, "housing_total": 0}, {"name": "Bank of Communications Co., Ltd.", "total_assets": 10955.8, "housing_total": 0}, {"name": "Bank of Queensland Limited", "total_assets": 115935.8, "housing_total": 53663.299999999996}, {"name": "Bank of Sydney Ltd", "total_assets": 4378.9, "housing_total": 1882.9}, {"name": "Bank of Taiwan", "total_assets": 1015.7, "housing_total": 0}, {"name": "Barclays Bank PLC", "total_assets": 1095.4, "housing_total": 0}, {"name": "Bendigo and Adelaide Bank Limited", "total_assets": 111675.5, "housing_total": 63312.1}, {"name": "Beyond Bank Australia Limited", "total_assets": 15654.3, "housing_total": 9051.0}, {"name": "BNK Banking Corporation Limited", "total_assets": 1242.7, "housing_total": 711.7}, {"name": "BNP Paribas", "total_assets": 21157.0, "housing_total": 0}, {"name": "Canadian Imperial Bank of Commerce", "total_assets": 3933.5, "housing_total": 0}, {"name": "Central West Credit Union Limited", "total_assets": 309.8, "housing_total": 146.8}, {"name": "China Construction Bank Corporation", "total_assets": 11984.3, "housing_total": 0}, {"name": "China Everbright Bank Co., Ltd", "total_assets": 7968.9, "housing_total": 0}, {"name": "China Merchants Bank Co., Ltd", "total_assets": 1790.2, "housing_total": 0}, {"name": "Citibank, N.A.", "total_assets": 20041.7, "housing_total": 0}, {"name": "Coastline Credit Union Limited", "total_assets": 950.7, "housing_total": 648.7}, {"name": "Commonwealth Bank of Australia", "total_assets": 1192189.6, "housing_total": 616445.3}, {"name": "Community First Credit Union Limited", "total_assets": 3658.1, "housing_total": 1837.7}, {"name": "Cooperatieve Rabobank U.A.", "total_assets": 24035.7, "housing_total": 0}, {"name": "Credit Agricole Corporate and Investment Bank", "total_assets": 9136.3, "housing_total": 0}, {"name": "Credit Union Australia Ltd", "total_assets": 24619.4, "housing_total": 18044.2}, {"name": "Credit Union SA Ltd", "total_assets": 2467.5, "housing_total": 1726.6}, {"name": "Cuscal Limited", "total_assets": 4412.2, "housing_total": 0}, {"name": "DBS Bank Ltd", "total_assets": 17940.0, "housing_total": 0}, {"name": "Defence Bank Limited", "total_assets": 5130.1, "housing_total": 3635.0}, {"name": "Deutsche Bank Aktiengesellschaft", "total_assets": 17236.3, "housing_total": 0}, {"name": "Dnister Ukrainian Credit Co-operative Limited", "total_assets": 291.2, "housing_total": 207.7}, {"name": "E.SUN Commercial Bank, Ltd.", "total_assets": 3971.2, "housing_total": 0}, {"name": "Family First Credit Union Limited", "total_assets": 261.5, "housing_total": 214.5}, {"name": "First Commercial Bank", "total_assets": 2978.4, "housing_total": 0}, {"name": "First Option Bank Ltd", "total_assets": 318.7, "housing_total": 244.7}, {"name": "Gateway Bank Ltd", "total_assets": 1955.2, "housing_total": 1095.7}, {"name": "Goulburn Murray Credit Union Co-operative Limited", "total_assets": 614.0, "housing_total": 376.6}, {"name": "Heartland Bank Australia Limited", "total_assets": 3146.3, "housing_total": 208.8}, {"name": "Heritage and People's Choice Limited", "total_assets": 28434.2, "housing_total": 20800.4}, {"name": "Horizon Credit Union Ltd", "total_assets": 789.0, "housing_total": 508.2}, {"name": "HSBC Bank Australia Limited", "total_assets": 66394.9, "housing_total": 34739.100000000006}, {"name": "Hua Nan Commercial Bank, Ltd.", "total_assets": 1571.4, "housing_total": 0}, {"name": "Hume Bank Limited", "total_assets": 2586.0, "housing_total": 1536.2}, {"name": "IMB Ltd", "total_assets": 10656.0, "housing_total": 6467.9}, {"name": "IN1Bank Ltd", "total_assets": 31.6, "housing_total": 2.8}, {"name": "Indue Ltd", "total_assets": 893.6, "housing_total": 0}, {"name": "Industrial and Commercial Bank of China Limited", "total_assets": 17888.2, "housing_total": 0}, {"name": "ING Bank (Australia) Limited", "total_assets": 113887.3, "housing_total": 71710.5}, {"name": "ING Bank N.V.", "total_assets": 19318.5, "housing_total": 0}, {"name": "Intesa Sanpaolo SPA", "total_assets": 3254.0, "housing_total": 0}, {"name": "JPMorgan Chase Bank, National Association", "total_assets": 23723.4, "housing_total": 0}, {"name": "Judo Bank Pty Ltd", "total_assets": 19200.4, "housing_total": 1170.9}, {"name": "KEB HANA Bank", "total_assets": 971.6, "housing_total": 4.9}, {"name": "Laboratories Credit Union Limited", "total_assets": 306.7, "housing_total": 247.20000000000002}, {"name": "Land Bank of Taiwan Co., Ltd.", "total_assets": 260.3, "housing_total": 0}, {"name": "Macarthur Credit Union Ltd", "total_assets": 400.4, "housing_total": 265.3}, {"name": "Macquarie Bank Limited", "total_assets": 321639.4, "housing_total": 164695.9}, {"name": "Maitland Mutual Limited", "total_assets": 1427.2, "housing_total": 837.3}, {"name": "Mega International Commercial Bank Co., Ltd.", "total_assets": 3941.9, "housing_total": 9.7}, {"name": "Members Banking Group Limited", "total_assets": 3784.7, "housing_total": 2602.0}, {"name": "Mizuho Bank, Ltd.", "total_assets": 27512.3, "housing_total": 0}, {"name": "MUFG Bank, Ltd.", "total_assets": 32802.9, "housing_total": 0}, {"name": "MyState Bank Limited", "total_assets": 15154.4, "housing_total": 10560.8}, {"name": "National Australia Bank Limited", "total_assets": 982677.2, "housing_total": 343666.4}, {"name": "Newcastle Greater Mutual Group Ltd", "total_assets": 26790.6, "housing_total": 18490.5}, {"name": "Nonghyup Bank", "total_assets": 278.9, "housing_total": 0}, {"name": "Sun", "total_assets": 95345.0, "housing_total": 57442.6}, {"name": "Northern Inland Credit Union Limited", "total_assets": 478.5, "housing_total": 317.1}, {"name": "Orange Credit Union Limited", "total_assets": 331.7, "housing_total": 209.7}, {"name": "Oversea-Chinese Banking Corporation Limited", "total_assets": 19052.8, "housing_total": 0}, {"name": "PayPal Australia Pty Limited", "total_assets": 1801.2, "housing_total": 0}, {"name": "Police & Nurses Limited", "total_assets": 11154.1, "housing_total": 7580.700000000001}, {"name": "Police Bank Ltd", "total_assets": 3450.1, "housing_total": 2265.4}, {"name": "Police Credit Union Limited", "total_assets": 1537.4, "housing_total": 989.5}, {"name": "Police Financial Services Limited", "total_assets": 4170.5, "housing_total": 2934.4}, {"name": "QPCU Limited", "total_assets": 1356.8, "housing_total": 877.1999999999999}, {"name": "Queensland Country Bank Limited", "total_assets": 4442.0, "housing_total": 2998.7000000000003}, {"name": "Rabobank Australia Limited", "total_assets": 27956.9, "housing_total": 213.6}, {"name": "Railways Credit Union Limited", "total_assets": 1082.3, "housing_total": 783.4}, {"name": "Regional Australia Bank Ltd", "total_assets": 4742.2, "housing_total": 2981.2}, {"name": "Royal Bank of Canada", "total_assets": 22029.9, "housing_total": 0}, {"name": "Shinhan Bank Co., Ltd", "total_assets": 1132.4, "housing_total": 0}, {"name": "Societe Generale", "total_assets": 6185.5, "housing_total": 0}, {"name": "South West Slopes Credit Union Ltd", "total_assets": 328.7, "housing_total": 155.2}, {"name": "Southern Cross Credit Union Ltd", "total_assets": 1055.1, "housing_total": 770.9}, {"name": "Standard Chartered Bank", "total_assets": 5124.2, "housing_total": 0}, {"name": "State Bank of India", "total_assets": 2052.3, "housing_total": 0}, {"name": "State Street Bank and Trust Company", "total_assets": 6876.4, "housing_total": 0}, {"name": "Sumitomo Mitsui Banking Corporation", "total_assets": 42344.4, "housing_total": 0}, {"name": "Summerland Financial Services Limited", "total_assets": 1215.8, "housing_total": 903.2}, {"name": "Taishin International Bank Co., Ltd", "total_assets": 1621.6, "housing_total": 0}, {"name": "Taiwan Business Bank, Ltd", "total_assets": 2114.2, "housing_total": 14.3}, {"name": "Taiwan Cooperative Bank, Ltd", "total_assets": 1295.3, "housing_total": 0}, {"name": "Teachers Mutual Bank Limited", "total_assets": 13475.6, "housing_total": 9734.0}, {"name": "The Bank of New York Mellon", "total_assets": 54.4, "housing_total": 0}, {"name": "The Bank of Nova Scotia", "total_assets": 923.3, "housing_total": 0}, {"name": "The Capricornian Ltd", "total_assets": 459.9, "housing_total": 366.0}, {"name": "The Hongkong and Shanghai Banking Corporation Limited", "total_assets": 37447.1, "housing_total": 0}, {"name": "The Northern Trust Company", "total_assets": 3744.1, "housing_total": 0}, {"name": "Tyro Payments Limited", "total_assets": 483.3, "housing_total": 0}, {"name": "UBS AG", "total_assets": 20642.4, "housing_total": 250.0}, {"name": "Union Bank of India", "total_assets": 524.4, "housing_total": 0}, {"name": "United Overseas Bank Limited", "total_assets": 21617.8, "housing_total": 0}, {"name": "Unity Bank Limited", "total_assets": 4612.0, "housing_total": 2360.0}, {"name": "Victoria Teachers Limited", "total_assets": 4682.1, "housing_total": 3220.5}, {"name": "Warwick Credit Union Ltd", "total_assets": 569.7, "housing_total": 360.8}, {"name": "WAW Credit Union Co-Operative Limited", "total_assets": 744.6, "housing_total": 490.40000000000003}, {"name": "Westpac Banking Corporation", "total_assets": 1117245.6, "housing_total": 502506.5}, {"name": "Wise Australia Pty Ltd", "total_assets": 2320.5, "housing_total": 0}, {"name": "Woori Bank", "total_assets": 645.9, "housing_total": 0}], "total_market_dec": 2426044.5, "total_market_jun": 2344265.0, "system_growth": 3.4885};
+
+const DATA_OO = {
+  "institutions": [{"name":"Beyond Bank Australia Limited","housing_total_dec":7085.7,"housing_total_jun":6678.1,"market_share":0.4313,"growth":6.1035},{"name":"Victoria Teachers Limited","housing_total_dec":2706.0,"housing_total_jun":2564.4,"market_share":0.1647,"growth":5.5218},{"name":"Regional Australia Bank Ltd","housing_total_dec":2372.1,"housing_total_jun":2277.7,"market_share":0.1444,"growth":4.1445},{"name":"The Capricornian Ltd","housing_total_dec":303.9,"housing_total_jun":252.2,"market_share":0.0185,"growth":20.4996},{"name":"KEB HANA Bank","housing_total_dec":3.5,"housing_total_jun":3.5,"market_share":0.0002,"growth":0.0},{"name":"Police & Nurses Limited","housing_total_dec":6182.8,"housing_total_jun":5950.2,"market_share":0.3763,"growth":3.9091},{"name":"Hume Bank Limited","housing_total_dec":1214.5,"housing_total_jun":1235.4,"market_share":0.0739,"growth":-1.6918},{"name":"First Option Bank Ltd","housing_total_dec":184.1,"housing_total_jun":174.2,"market_share":0.0112,"growth":5.6831},{"name":"Bank of China (Australia) Limited","housing_total_dec":5944.2,"housing_total_jun":5493.6,"market_share":0.3618,"growth":8.2023},{"name":"Warwick Credit Union Ltd","housing_total_dec":288.3,"housing_total_jun":280.2,"market_share":0.0175,"growth":2.8908},{"name":"South West Slopes Credit Union Ltd","housing_total_dec":131.6,"housing_total_jun":132.8,"market_share":0.008,"growth":-0.9036},{"name":"Police Credit Union Limited","housing_total_dec":637.9,"housing_total_jun":603.6,"market_share":0.0388,"growth":5.6826},{"name":"Australian Mutual Bank Ltd","housing_total_dec":988.5,"housing_total_jun":1014.5,"market_share":0.0602,"growth":-2.5628},{"name":"Central West Credit Union Limited","housing_total_dec":114.6,"housing_total_jun":110.3,"market_share":0.007,"growth":3.8985},{"name":"BNK Banking Corporation Limited","housing_total_dec":472.8,"housing_total_jun":499.5,"market_share":0.0288,"growth":-5.3453},{"name":"Laboratories Credit Union Limited","housing_total_dec":200.8,"housing_total_jun":195.7,"market_share":0.0122,"growth":2.606},{"name":"Commonwealth Bank of Australia","housing_total_dec":402223.9,"housing_total_jun":391546.3,"market_share":24.4833,"growth":2.727},{"name":"HSBC Bank Australia Limited","housing_total_dec":24128.4,"housing_total_jun":23251.5,"market_share":1.4687,"growth":3.7714},{"name":"Credit Union Australia Ltd","housing_total_dec":14851.6,"housing_total_jun":14226.9,"market_share":0.904,"growth":4.391},{"name":"Westpac Banking Corporation","housing_total_dec":333243.4,"housing_total_jun":323479.2,"market_share":20.2845,"growth":3.0185},{"name":"Norfina Limited","housing_total_dec":40676.0,"housing_total_jun":40453.2,"market_share":2.4759,"growth":0.5508},{"name":"Coastline Credit Union Limited","housing_total_dec":503.4,"housing_total_jun":494.6,"market_share":0.0306,"growth":1.7792},{"name":"Unity Bank Limited","housing_total_dec":1980.0,"housing_total_jun":0.0,"market_share":0.1205,"growth":0.0},{"name":"AMP Bank Limited","housing_total_dec":14143.6,"housing_total_jun":13918.2,"market_share":0.8609,"growth":1.6195},{"name":"Credit Union SA Ltd","housing_total_dec":1366.8,"housing_total_jun":1279.3,"market_share":0.0832,"growth":6.8397},{"name":"UBS AG","housing_total_dec":77.9,"housing_total_jun":97.7,"market_share":0.0047,"growth":-20.2661},{"name":"Heartland Bank Australia Limited","housing_total_dec":201.5,"housing_total_jun":159.9,"market_share":0.0123,"growth":26.0163},{"name":"Australia and New Zealand Banking Group Limited","housing_total_dec":214337.3,"housing_total_jun":212399.6,"market_share":13.0467,"growth":0.9123},{"name":"Judo Bank Pty Ltd","housing_total_dec":794.7,"housing_total_jun":854.7,"market_share":0.0484,"growth":-7.02},{"name":"Members Banking Group Limited","housing_total_dec":2057.2,"housing_total_jun":2034.6,"market_share":0.1252,"growth":1.1108},{"name":"Horizon Credit Union Ltd","housing_total_dec":389.4,"housing_total_jun":366.0,"market_share":0.0237,"growth":6.3934},{"name":"Mega International Commercial Bank Co., Ltd.","housing_total_dec":4.7,"housing_total_jun":5.3,"market_share":0.0003,"growth":-11.3208},{"name":"Heritage and People's Choice Limited","housing_total_dec":16965.0,"housing_total_jun":16303.5,"market_share":1.0327,"growth":4.0574},{"name":"MyState Bank Limited","housing_total_dec":8614.5,"housing_total_jun":5139.7,"market_share":0.5244,"growth":67.6071},{"name":"Queensland Country Bank Limited","housing_total_dec":2256.3,"housing_total_jun":2142.7,"market_share":0.1373,"growth":5.3017},{"name":"Police Financial Services Limited","housing_total_dec":2489.8,"housing_total_jun":2336.6,"market_share":0.1516,"growth":6.5565},{"name":"Newcastle Greater Mutual Group Ltd","housing_total_dec":14056.1,"housing_total_jun":13396.0,"market_share":0.8556,"growth":4.9276},{"name":"Rabobank Australia Limited","housing_total_dec":51.1,"housing_total_jun":51.3,"market_share":0.0031,"growth":-0.3899},{"name":"Goulburn Murray Credit Union Co-operative Limited","housing_total_dec":297.3,"housing_total_jun":281.8,"market_share":0.0181,"growth":5.5004},{"name":"Orange Credit Union Limited","housing_total_dec":136.5,"housing_total_jun":135.9,"market_share":0.0083,"growth":0.4415},{"name":"Bank Australia Limited","housing_total_dec":12652.4,"housing_total_jun":7112.8,"market_share":0.7701,"growth":77.8821},{"name":"Police Bank Ltd","housing_total_dec":1802.4,"housing_total_jun":1718.0,"market_share":0.1097,"growth":4.9127},{"name":"Arab Bank Australia Limited","housing_total_dec":311.5,"housing_total_jun":309.8,"market_share":0.019,"growth":0.5487},{"name":"Summerland Financial Services Limited","housing_total_dec":700.4,"housing_total_jun":672.9,"market_share":0.0426,"growth":4.0868},{"name":"Dnister Ukrainian Credit Co-operative Limited","housing_total_dec":146.2,"housing_total_jun":134.9,"market_share":0.0089,"growth":8.3766},{"name":"IN1Bank Ltd","housing_total_dec":1.6,"housing_total_jun":1.5,"market_share":0.0001,"growth":6.6667},{"name":"ING Bank (Australia) Limited","housing_total_dec":55936.7,"housing_total_jun":53027.4,"market_share":3.4049,"growth":5.4864},{"name":"Bendigo and Adelaide Bank Limited","housing_total_dec":48696.1,"housing_total_jun":49926.5,"market_share":2.9641,"growth":-2.4644},{"name":"Maitland Mutual Limited","housing_total_dec":626.8,"housing_total_jun":620.8,"market_share":0.0382,"growth":0.9665},{"name":"Australian Military Bank Ltd","housing_total_dec":1675.9,"housing_total_jun":1518.8,"market_share":0.102,"growth":10.3437},{"name":"Macquarie Bank Limited","housing_total_dec":101195.3,"housing_total_jun":90228.4,"market_share":6.1597,"growth":12.1546},{"name":"Southern Cross Credit Union Ltd","housing_total_dec":556.5,"housing_total_jun":555.5,"market_share":0.0339,"growth":0.18},{"name":"B & E Ltd","housing_total_dec":1458.5,"housing_total_jun":1385.3,"market_share":0.0888,"growth":5.2841},{"name":"Family First Credit Union Limited","housing_total_dec":176.7,"housing_total_jun":172.4,"market_share":0.0108,"growth":2.4942},{"name":"National Australia Bank Limited","housing_total_dec":232542.8,"housing_total_jun":222456.2,"market_share":14.1548,"growth":4.5342},{"name":"Bank of Queensland Limited","housing_total_dec":37475.2,"housing_total_jun":39327.5,"market_share":2.2811,"growth":-4.7099},{"name":"Bank of Sydney Ltd","housing_total_dec":1372.5,"housing_total_jun":1325.2,"market_share":0.0835,"growth":3.5693},{"name":"Teachers Mutual Bank Limited","housing_total_dec":8369.5,"housing_total_jun":7768.1,"market_share":0.5095,"growth":7.7419},{"name":"Railways Credit Union Limited","housing_total_dec":601.5,"housing_total_jun":569.6,"market_share":0.0366,"growth":5.6004},{"name":"WAW Credit Union Co-Operative Limited","housing_total_dec":391.1,"housing_total_jun":393.0,"market_share":0.0238,"growth":-0.4835},{"name":"Defence Bank Limited","housing_total_dec":3138.5,"housing_total_jun":2977.7,"market_share":0.191,"growth":5.4001},{"name":"Macarthur Credit Union Ltd","housing_total_dec":214.9,"housing_total_jun":211.9,"market_share":0.0131,"growth":1.4158},{"name":"QPCU Limited","housing_total_dec":684.3,"housing_total_jun":658.3,"market_share":0.0417,"growth":3.9496},{"name":"Community First Credit Union Limited","housing_total_dec":1312.9,"housing_total_jun":1262.7,"market_share":0.0799,"growth":3.9756},{"name":"Northern Inland Credit Union Limited","housing_total_dec":251.6,"housing_total_jun":240.1,"market_share":0.0153,"growth":4.7897},{"name":"Gateway Bank Ltd","housing_total_dec":902.4,"housing_total_jun":928.5,"market_share":0.0549,"growth":-2.811},{"name":"IMB Ltd","housing_total_dec":4978.2,"housing_total_jun":4689.3,"market_share":0.303,"growth":6.1608}],
+  "total_market_dec": 1642850.1,
+  "total_market_jun": 1592193.3,
+  "system_growth": 3.1816
+};
+
+const DATA_INV = {
+  "institutions": [{"name":"Beyond Bank Australia Limited","housing_total_dec":1965.3,"housing_total_jun":1794.1,"market_share":0.2509,"growth":9.5424},{"name":"Victoria Teachers Limited","housing_total_dec":514.5,"housing_total_jun":516.6,"market_share":0.0657,"growth":-0.4065},{"name":"Regional Australia Bank Ltd","housing_total_dec":609.1,"housing_total_jun":541.6,"market_share":0.0778,"growth":12.4631},{"name":"The Capricornian Ltd","housing_total_dec":62.1,"housing_total_jun":54.2,"market_share":0.0079,"growth":14.5756},{"name":"KEB HANA Bank","housing_total_dec":1.4,"housing_total_jun":1.4,"market_share":0.0002,"growth":0.0},{"name":"Police & Nurses Limited","housing_total_dec":1397.9,"housing_total_jun":1308.5,"market_share":0.1785,"growth":6.8323},{"name":"Hume Bank Limited","housing_total_dec":321.7,"housing_total_jun":323.9,"market_share":0.0411,"growth":-0.6792},{"name":"First Option Bank Ltd","housing_total_dec":60.6,"housing_total_jun":62.7,"market_share":0.0077,"growth":-3.3493},{"name":"Bank of China (Australia) Limited","housing_total_dec":1730.0,"housing_total_jun":1588.4,"market_share":0.2209,"growth":8.9146},{"name":"Warwick Credit Union Ltd","housing_total_dec":72.5,"housing_total_jun":68.9,"market_share":0.0093,"growth":5.225},{"name":"South West Slopes Credit Union Ltd","housing_total_dec":23.6,"housing_total_jun":25.5,"market_share":0.003,"growth":-7.451},{"name":"Police Credit Union Limited","housing_total_dec":351.6,"housing_total_jun":309.2,"market_share":0.0449,"growth":13.7128},{"name":"Australian Mutual Bank Ltd","housing_total_dec":330.1,"housing_total_jun":313.7,"market_share":0.0421,"growth":5.2279},{"name":"Central West Credit Union Limited","housing_total_dec":32.2,"housing_total_jun":30.7,"market_share":0.0041,"growth":4.886},{"name":"BNK Banking Corporation Limited","housing_total_dec":238.9,"housing_total_jun":243.6,"market_share":0.0305,"growth":-1.9294},{"name":"Laboratories Credit Union Limited","housing_total_dec":46.4,"housing_total_jun":47.0,"market_share":0.0059,"growth":-1.2766},{"name":"Commonwealth Bank of Australia","housing_total_dec":214221.4,"housing_total_jun":202117.1,"market_share":27.3523,"growth":5.9888},{"name":"HSBC Bank Australia Limited","housing_total_dec":10610.7,"housing_total_jun":9968.6,"market_share":1.3548,"growth":6.4412},{"name":"Credit Union Australia Ltd","housing_total_dec":3192.6,"housing_total_jun":3093.5,"market_share":0.4076,"growth":3.2035},{"name":"Westpac Banking Corporation","housing_total_dec":169263.1,"housing_total_jun":164456.3,"market_share":21.6119,"growth":2.9228},{"name":"Norfina Limited","housing_total_dec":16766.6,"housing_total_jun":16062.4,"market_share":2.1408,"growth":4.3842},{"name":"Coastline Credit Union Limited","housing_total_dec":145.3,"housing_total_jun":142.4,"market_share":0.0186,"growth":2.0365},{"name":"Unity Bank Limited","housing_total_dec":380.0,"housing_total_jun":0.0,"market_share":0.0485,"growth":0.0},{"name":"AMP Bank Limited","housing_total_dec":8643.5,"housing_total_jun":8272.1,"market_share":1.1036,"growth":4.4898},{"name":"Credit Union SA Ltd","housing_total_dec":359.8,"housing_total_jun":347.6,"market_share":0.0459,"growth":3.5098},{"name":"UBS AG","housing_total_dec":172.1,"housing_total_jun":196.6,"market_share":0.022,"growth":-12.4619},{"name":"Heartland Bank Australia Limited","housing_total_dec":7.3,"housing_total_jun":8.1,"market_share":0.0009,"growth":-9.8765},{"name":"Australia and New Zealand Banking Group Limited","housing_total_dec":107147.3,"housing_total_jun":105307.6,"market_share":13.6808,"growth":1.747},{"name":"Judo Bank Pty Ltd","housing_total_dec":376.2,"housing_total_jun":302.2,"market_share":0.048,"growth":24.4871},{"name":"Members Banking Group Limited","housing_total_dec":544.8,"housing_total_jun":516.5,"market_share":0.0696,"growth":5.4792},{"name":"Horizon Credit Union Ltd","housing_total_dec":118.8,"housing_total_jun":121.7,"market_share":0.0152,"growth":-2.3829},{"name":"Mega International Commercial Bank Co., Ltd.","housing_total_dec":5.0,"housing_total_jun":5.1,"market_share":0.0006,"growth":-1.9608},{"name":"Heritage and People's Choice Limited","housing_total_dec":3835.4,"housing_total_jun":3675.9,"market_share":0.4897,"growth":4.3391},{"name":"MyState Bank Limited","housing_total_dec":1946.3,"housing_total_jun":1094.8,"market_share":0.2485,"growth":77.7768},{"name":"Queensland Country Bank Limited","housing_total_dec":742.4,"housing_total_jun":701.8,"market_share":0.0948,"growth":5.7851},{"name":"Police Financial Services Limited","housing_total_dec":444.6,"housing_total_jun":400.7,"market_share":0.0568,"growth":10.9558},{"name":"Newcastle Greater Mutual Group Ltd","housing_total_dec":4434.4,"housing_total_jun":4135.7,"market_share":0.5662,"growth":7.2225},{"name":"Rabobank Australia Limited","housing_total_dec":162.5,"housing_total_jun":175.8,"market_share":0.0207,"growth":-7.5654},{"name":"Goulburn Murray Credit Union Co-operative Limited","housing_total_dec":79.3,"housing_total_jun":74.0,"market_share":0.0101,"growth":7.1622},{"name":"Orange Credit Union Limited","housing_total_dec":73.2,"housing_total_jun":78.4,"market_share":0.0093,"growth":-6.6327},{"name":"Bank Australia Limited","housing_total_dec":3472.0,"housing_total_jun":2092.8,"market_share":0.4433,"growth":65.9021},{"name":"Police Bank Ltd","housing_total_dec":463.0,"housing_total_jun":431.8,"market_share":0.0591,"growth":7.2256},{"name":"Taiwan Business Bank, Ltd","housing_total_dec":14.3,"housing_total_jun":15.0,"market_share":0.0018,"growth":-4.6667},{"name":"Arab Bank Australia Limited","housing_total_dec":250.5,"housing_total_jun":269.6,"market_share":0.032,"growth":-7.0846},{"name":"Summerland Financial Services Limited","housing_total_dec":202.8,"housing_total_jun":197.0,"market_share":0.0259,"growth":2.9442},{"name":"Dnister Ukrainian Credit Co-operative Limited","housing_total_dec":61.5,"housing_total_jun":57.2,"market_share":0.0079,"growth":7.5175},{"name":"IN1Bank Ltd","housing_total_dec":1.2,"housing_total_jun":1.0,"market_share":0.0002,"growth":20.0},{"name":"ING Bank (Australia) Limited","housing_total_dec":15773.8,"housing_total_jun":13444.4,"market_share":2.014,"growth":17.3262},{"name":"Bendigo and Adelaide Bank Limited","housing_total_dec":14616.0,"housing_total_jun":15027.9,"market_share":1.8662,"growth":-2.7409},{"name":"Maitland Mutual Limited","housing_total_dec":210.5,"housing_total_jun":213.7,"market_share":0.0269,"growth":-1.4974},{"name":"Australian Military Bank Ltd","housing_total_dec":234.1,"housing_total_jun":226.5,"market_share":0.0299,"growth":3.3554},{"name":"Macquarie Bank Limited","housing_total_dec":63500.6,"housing_total_jun":54302.5,"market_share":8.1079,"growth":16.9386},{"name":"Southern Cross Credit Union Ltd","housing_total_dec":214.4,"housing_total_jun":198.2,"market_share":0.0274,"growth":8.1736},{"name":"B & E Ltd","housing_total_dec":230.5,"housing_total_jun":241.4,"market_share":0.0294,"growth":-4.5153},{"name":"Family First Credit Union Limited","housing_total_dec":37.8,"housing_total_jun":38.7,"market_share":0.0048,"growth":-2.3256},{"name":"National Australia Bank Limited","housing_total_dec":111123.6,"housing_total_jun":112206.0,"market_share":14.1885,"growth":-0.9647},{"name":"Bank of Queensland Limited","housing_total_dec":16188.1,"housing_total_jun":16978.2,"market_share":2.0669,"growth":-4.6536},{"name":"Bank of Sydney Ltd","housing_total_dec":510.4,"housing_total_jun":504.3,"market_share":0.0652,"growth":1.2096},{"name":"Teachers Mutual Bank Limited","housing_total_dec":1364.5,"housing_total_jun":1337.1,"market_share":0.1742,"growth":2.0492},{"name":"Railways Credit Union Limited","housing_total_dec":181.9,"housing_total_jun":162.0,"market_share":0.0232,"growth":12.284},{"name":"WAW Credit Union Co-Operative Limited","housing_total_dec":99.3,"housing_total_jun":103.6,"market_share":0.0127,"growth":-4.1506},{"name":"Defence Bank Limited","housing_total_dec":496.5,"housing_total_jun":493.7,"market_share":0.0634,"growth":0.5671},{"name":"Macarthur Credit Union Ltd","housing_total_dec":50.4,"housing_total_jun":46.6,"market_share":0.0064,"growth":8.1545},{"name":"QPCU Limited","housing_total_dec":192.9,"housing_total_jun":180.3,"market_share":0.0246,"growth":6.9884},{"name":"Community First Credit Union Limited","housing_total_dec":524.8,"housing_total_jun":482.3,"market_share":0.067,"growth":8.8119},{"name":"Northern Inland Credit Union Limited","housing_total_dec":65.5,"housing_total_jun":68.0,"market_share":0.0084,"growth":-3.6765},{"name":"Gateway Bank Ltd","housing_total_dec":193.3,"housing_total_jun":194.5,"market_share":0.0247,"growth":-0.617},{"name":"IMB Ltd","housing_total_dec":1489.7,"housing_total_jun":1351.4,"market_share":0.1902,"growth":10.2338}],
+  "total_market_dec": 783194.4,
+  "total_market_jun": 752071.7,
+  "system_growth": 4.1383
+};
+
+const DATA_DEPOSITS = {"institutions":[{"name":"Australia and New Zealand Banking Group Limited","deposits_total_dec":193834.6,"deposits_total_jun":185291.0,"market_share":11.3174,"growth":4.6109},{"name":"Heritage and People's Choice Limited","deposits_total_dec":17953.4,"deposits_total_jun":17285.3,"market_share":1.0482,"growth":3.8651},{"name":"Queensland Country Bank Limited","deposits_total_dec":2874.7,"deposits_total_jun":2650.9,"market_share":0.1678,"growth":8.4424},{"name":"Credit Union SA Ltd","deposits_total_dec":1661.9,"deposits_total_jun":1566.5,"market_share":0.097,"growth":6.09},{"name":"Members Banking Group Limited","deposits_total_dec":2327.3,"deposits_total_jun":2315.3,"market_share":0.1359,"growth":0.5183},{"name":"Beyond Bank Australia Limited","deposits_total_dec":7040.8,"deposits_total_jun":6736.8,"market_share":0.4111,"growth":4.5125},{"name":"Central West Credit Union Limited","deposits_total_dec":240.7,"deposits_total_jun":227.3,"market_share":0.0141,"growth":5.8953},{"name":"Teachers Mutual Bank Limited","deposits_total_dec":8988.2,"deposits_total_jun":8644.7,"market_share":0.5248,"growth":3.9735},{"name":"Goulburn Murray Credit Union Co-operative Limited","deposits_total_dec":454.8,"deposits_total_jun":427.2,"market_share":0.0266,"growth":6.4607},{"name":"Taiwan Cooperative Bank, Ltd","deposits_total_dec":2.3,"deposits_total_jun":2.3,"market_share":0.0001,"growth":0.0},{"name":"Norfina Limited","deposits_total_dec":39224.9,"deposits_total_jun":37522.7,"market_share":2.2902,"growth":4.5365},{"name":"Heartland Bank Australia Limited","deposits_total_dec":1084.9,"deposits_total_jun":1099.6,"market_share":0.0633,"growth":-1.3368},{"name":"Mega International Commercial Bank Co., Ltd.","deposits_total_dec":14.8,"deposits_total_jun":14.5,"market_share":0.0009,"growth":2.069},{"name":"Taishin International Bank Co., Ltd","deposits_total_dec":0.7,"deposits_total_jun":0.7,"market_share":0.0,"growth":0.0},{"name":"Unity Bank Limited","deposits_total_dec":2253.8,"deposits_total_jun":0.0,"market_share":0.1316,"growth":0.0},{"name":"Westpac Banking Corporation","deposits_total_dec":353999.4,"deposits_total_jun":332359.5,"market_share":20.6689,"growth":6.511},{"name":"South West Slopes Credit Union Ltd","deposits_total_dec":255.7,"deposits_total_jun":252.8,"market_share":0.0149,"growth":1.1472},{"name":"Summerland Financial Services Limited","deposits_total_dec":847.2,"deposits_total_jun":816.5,"market_share":0.0495,"growth":3.76},{"name":"Bank of China (Australia) Limited","deposits_total_dec":5359.5,"deposits_total_jun":5069.0,"market_share":0.3129,"growth":5.7309},{"name":"First Commercial Bank","deposits_total_dec":6.4,"deposits_total_jun":6.6,"market_share":0.0004,"growth":-3.0303},{"name":"Bank of Sydney Ltd","deposits_total_dec":1736.5,"deposits_total_jun":1724.4,"market_share":0.1014,"growth":0.7017},{"name":"WAW Credit Union Co-Operative Limited","deposits_total_dec":556.0,"deposits_total_jun":523.7,"market_share":0.0325,"growth":6.1677},{"name":"Horizon Credit Union Ltd","deposits_total_dec":650.5,"deposits_total_jun":614.7,"market_share":0.038,"growth":5.824},{"name":"Arab Bank Australia Limited","deposits_total_dec":470.6,"deposits_total_jun":438.1,"market_share":0.0275,"growth":7.4184},{"name":"Gateway Bank Ltd","deposits_total_dec":983.1,"deposits_total_jun":989.0,"market_share":0.0574,"growth":-0.5966},{"name":"Victoria Teachers Limited","deposits_total_dec":3115.4,"deposits_total_jun":2998.4,"market_share":0.1819,"growth":3.9021},{"name":"National Australia Bank Limited","deposits_total_dec":236486.8,"deposits_total_jun":222135.2,"market_share":13.8077,"growth":6.4608},{"name":"Police Credit Union Limited","deposits_total_dec":1176.6,"deposits_total_jun":1130.5,"market_share":0.0687,"growth":4.0778},{"name":"Hume Bank Limited","deposits_total_dec":1544.4,"deposits_total_jun":1459.3,"market_share":0.0902,"growth":5.8316},{"name":"Bank of Queensland Limited","deposits_total_dec":33682.2,"deposits_total_jun":33574.9,"market_share":1.9666,"growth":0.3196},{"name":"E.SUN Commercial Bank, Ltd.","deposits_total_dec":33.6,"deposits_total_jun":26.7,"market_share":0.002,"growth":25.8427},{"name":"QPCU Limited","deposits_total_dec":733.1,"deposits_total_jun":707.7,"market_share":0.0428,"growth":3.5891},{"name":"Family First Credit Union Limited","deposits_total_dec":210.9,"deposits_total_jun":214.4,"market_share":0.0123,"growth":-1.6325},{"name":"AMP Bank Limited","deposits_total_dec":9110.8,"deposits_total_jun":9475.5,"market_share":0.532,"growth":-3.8489},{"name":"Dnister Ukrainian Credit Co-operative Limited","deposits_total_dec":244.1,"deposits_total_jun":243.7,"market_share":0.0143,"growth":0.1641},{"name":"Australian Mutual Bank Ltd","deposits_total_dec":1475.8,"deposits_total_jun":1444.5,"market_share":0.0862,"growth":2.1668},{"name":"Industrial and Commercial Bank of China Limited","deposits_total_dec":37.5,"deposits_total_jun":42.1,"market_share":0.0022,"growth":-10.9264},{"name":"Commonwealth Bank of Australia","deposits_total_dec":456412.0,"deposits_total_jun":424412.1,"market_share":26.6484,"growth":7.5398},{"name":"Newcastle Greater Mutual Group Ltd","deposits_total_dec":17156.9,"deposits_total_jun":16533.4,"market_share":1.0017,"growth":3.7712},{"name":"Bank of Baroda","deposits_total_dec":4.0,"deposits_total_jun":5.6,"market_share":0.0002,"growth":-28.5714},{"name":"Wise Australia Pty Ltd","deposits_total_dec":1734.1,"deposits_total_jun":1311.8,"market_share":0.1012,"growth":32.1924},{"name":"Warwick Credit Union Ltd","deposits_total_dec":377.5,"deposits_total_jun":322.8,"market_share":0.022,"growth":16.9455},{"name":"ING Bank (Australia) Limited","deposits_total_dec":54993.8,"deposits_total_jun":53058.8,"market_share":3.2109,"growth":3.6469},{"name":"BNK Banking Corporation Limited","deposits_total_dec":530.3,"deposits_total_jun":537.9,"market_share":0.031,"growth":-1.4129},{"name":"IN1Bank Ltd","deposits_total_dec":11.2,"deposits_total_jun":1.6,"market_share":0.0007,"growth":600.0},{"name":"First Option Bank Ltd","deposits_total_dec":249.8,"deposits_total_jun":247.4,"market_share":0.0146,"growth":0.9701},{"name":"Police & Nurses Limited","deposits_total_dec":6460.3,"deposits_total_jun":6096.8,"market_share":0.3772,"growth":5.9621},{"name":"Railways Credit Union Limited","deposits_total_dec":727.1,"deposits_total_jun":687.7,"market_share":0.0425,"growth":5.7292},{"name":"Orange Credit Union Limited","deposits_total_dec":275.8,"deposits_total_jun":262.2,"market_share":0.0161,"growth":5.1869},{"name":"China Merchants Bank Co., Ltd","deposits_total_dec":12.7,"deposits_total_jun":12.1,"market_share":0.0007,"growth":4.9587},{"name":"Maitland Mutual Limited","deposits_total_dec":621.4,"deposits_total_jun":609.6,"market_share":0.0363,"growth":1.9357},{"name":"Laboratories Credit Union Limited","deposits_total_dec":243.8,"deposits_total_jun":248.6,"market_share":0.0142,"growth":-1.9308},{"name":"Defence Bank Limited","deposits_total_dec":2892.6,"deposits_total_jun":2856.1,"market_share":0.1689,"growth":1.278},{"name":"Police Bank Ltd","deposits_total_dec":2067.0,"deposits_total_jun":1960.8,"market_share":0.1207,"growth":5.4162},{"name":"Regional Australia Bank Ltd","deposits_total_dec":2806.2,"deposits_total_jun":2601.2,"market_share":0.1638,"growth":7.881},{"name":"MyState Bank Limited","deposits_total_dec":7698.8,"deposits_total_jun":5119.5,"market_share":0.4495,"growth":50.3819},{"name":"Australian Military Bank Ltd","deposits_total_dec":1130.6,"deposits_total_jun":1015.6,"market_share":0.066,"growth":11.3234},{"name":"The Capricornian Ltd","deposits_total_dec":369.9,"deposits_total_jun":345.2,"market_share":0.0216,"growth":7.1553},{"name":"Judo Bank Pty Ltd","deposits_total_dec":6118.3,"deposits_total_jun":5996.5,"market_share":0.3572,"growth":2.0312},{"name":"State Bank of India","deposits_total_dec":4.6,"deposits_total_jun":6.9,"market_share":0.0003,"growth":-33.3333},{"name":"IMB Ltd","deposits_total_dec":5748.9,"deposits_total_jun":5491.4,"market_share":0.3357,"growth":4.6892},{"name":"Southern Cross Credit Union Ltd","deposits_total_dec":729.0,"deposits_total_jun":684.9,"market_share":0.0426,"growth":6.4389},{"name":"Alex Bank Pty Ltd","deposits_total_dec":29.3,"deposits_total_jun":37.9,"market_share":0.0017,"growth":-22.6913},{"name":"UBS AG","deposits_total_dec":252.0,"deposits_total_jun":321.1,"market_share":0.0147,"growth":-21.5198},{"name":"Taiwan Business Bank, Ltd","deposits_total_dec":6.7,"deposits_total_jun":7.0,"market_share":0.0004,"growth":-4.2857},{"name":"Community First Credit Union Limited","deposits_total_dec":1849.6,"deposits_total_jun":1848.1,"market_share":0.108,"growth":0.0812},{"name":"Bank Australia Limited","deposits_total_dec":13992.7,"deposits_total_jun":7813.5,"market_share":0.817,"growth":79.0836},{"name":"Coastline Credit Union Limited","deposits_total_dec":707.0,"deposits_total_jun":717.0,"market_share":0.0413,"growth":-1.3947},{"name":"B & E Ltd","deposits_total_dec":1298.9,"deposits_total_jun":1236.8,"market_share":0.0758,"growth":5.021},{"name":"HSBC Bank Australia Limited","deposits_total_dec":18058.7,"deposits_total_jun":18578.7,"market_share":1.0544,"growth":-2.7989},{"name":"PayPal Australia Pty Limited","deposits_total_dec":174.1,"deposits_total_jun":169.4,"market_share":0.0102,"growth":2.7745},{"name":"Northern Inland Credit Union Limited","deposits_total_dec":363.1,"deposits_total_jun":338.7,"market_share":0.0212,"growth":7.204},{"name":"Police Financial Services Limited","deposits_total_dec":2615.3,"deposits_total_jun":2477.8,"market_share":0.1527,"growth":5.5493},{"name":"Bendigo and Adelaide Bank Limited","deposits_total_dec":50137.6,"deposits_total_jun":48438.2,"market_share":2.9274,"growth":3.5084},{"name":"China Construction Bank Corporation","deposits_total_dec":7.0,"deposits_total_jun":6.4,"market_share":0.0004,"growth":9.375},{"name":"Macarthur Credit Union Ltd","deposits_total_dec":320.1,"deposits_total_jun":314.5,"market_share":0.0187,"growth":1.7806},{"name":"Oversea-Chinese Banking Corporation Limited","deposits_total_dec":0.1,"deposits_total_jun":0.1,"market_share":0.0,"growth":0.0},{"name":"Credit Union Australia Ltd","deposits_total_dec":13477.1,"deposits_total_jun":13021.8,"market_share":0.7869,"growth":3.4964},{"name":"KEB HANA Bank","deposits_total_dec":0.1,"deposits_total_jun":0.1,"market_share":0.0,"growth":0.0},{"name":"Macquarie Bank Limited","deposits_total_dec":101072.7,"deposits_total_jun":82485.8,"market_share":5.9013,"growth":22.5335},{"name":"Rabobank Australia Limited","deposits_total_dec":8303.7,"deposits_total_jun":8116.9,"market_share":0.4848,"growth":2.3014}],"total_market_dec":1712716.3,"total_market_jun":1606862.2,"system_growth":6.5876};
 
 const BANK_COLORS = {
   'Commonwealth Bank of Australia': '#FFD700',
@@ -524,32 +649,166 @@ const BANK_SHORT = {
   'Westpac Banking Corporation': 'WBC',
   'Macquarie Bank Limited': 'MQG',
   'Bank of Queensland Limited': 'BOQ',
-  'HSBC Bank Australia Limited': 'HSBC'
+  'HSBC Bank Australia Limited': 'HSBC',
+  'Norfina Limited': 'Sun'
 };
 const DEFAULT_COLOR = '#C8C2B8';
 const isMajor = name => name in BANK_COLORS;
 const getColor = name => BANK_COLORS[name] || DEFAULT_COLOR;
 const getShort = name => BANK_SHORT[name] || null;
 
-// Build unified node list for both views
-const allInstitutions = DATA.all_institutions.map(d => {
-  const match = DATA.institutions.find(i => i.name === d.name);
-  return {
-    name: d.name,
-    totalAssets: d.total_assets,
-    housingTotal: d.housing_total,
-    marketShare: match ? match.market_share : 0,
-    growth: match ? match.growth : 0,
-    housingJun: match ? match.housing_total_jun : 0,
-    major: isMajor(d.name)
-  };
-});
+// Dataset switching
+let currentDataset = 'housing'; // 'housing', 'oo', or 'inv'
 
-// Sort: majors first, then by assets
+function getCurrentData() {
+  if (currentDataset === 'oo') return DATA_OO;
+  if (currentDataset === 'inv') return DATA_INV;
+  return DATA;
+}
+
+function getDatasetLabel() {
+  if (currentDataset === 'oo') return { title: 'Housing Loans: Owner Occupier', short: 'Housing Loans: OO' };
+  if (currentDataset === 'inv') return { title: 'Housing Loans: Investment', short: 'Housing Loans: INV' };
+  return { title: 'Housing Loans', short: 'Housing Loans' };
+}
+
+// Build unified node list for both views
+let allInstitutions = [];
+
+function rebuildInstitutions() {
+  const currentData = getCurrentData();
+
+  // For housing, we have all_institutions. For OO/INV, we only have institutions with that loan type
+  if (currentDataset === 'housing') {
+    allInstitutions = DATA.all_institutions.map(d => {
+      const match = DATA.institutions.find(i => i.name === d.name);
+      return {
+        name: d.name,
+        totalAssets: d.total_assets,
+        housingTotal: d.housing_total,
+        marketShare: match ? match.market_share : 0,
+        growth: match ? match.growth : 0,
+        housingJun: match ? match.housing_total_jun : 0,
+        major: isMajor(d.name)
+      };
+    });
+  } else {
+    // For OO/INV, build from institutions list
+    allInstitutions = currentData.institutions.map(d => {
+      return {
+        name: d.name,
+        totalAssets: 0, // Not available for OO/INV
+        housingTotal: d.housing_total_dec,
+        marketShare: d.market_share,
+        growth: d.growth,
+        housingJun: d.housing_total_jun,
+        major: isMajor(d.name)
+      };
+    });
+  }
+}
+
+// Initialize
+rebuildInstitutions();
+
+// Sort: majors first, then by assets or housing total
 allInstitutions.sort((a,b) => {
   if (a.major !== b.major) return b.major - a.major;
-  return b.totalAssets - a.totalAssets;
+  if (currentDataset === 'housing') return b.totalAssets - a.totalAssets;
+  return b.housingTotal - a.housingTotal;
 });
+
+// Function to switch dataset and re-render
+function switchDataset(dataset) {
+  currentDataset = dataset;
+  rebuildInstitutions();
+
+  // Sort again
+  allInstitutions.sort((a,b) => {
+    if (a.major !== b.major) return b.major - a.major;
+    if (currentDataset === 'housing') return b.totalAssets - a.totalAssets;
+    return b.housingTotal - a.housingTotal;
+  });
+
+  // Update stats
+  const currentData = getCurrentData();
+  const labels = getDatasetLabel();
+
+  // Format total market value - always show Bn without decimals
+  document.getElementById('stat-total').textContent = '$' + Math.round(currentData.total_market_dec / 1000) + 'Bn';
+  document.getElementById('stat-growth').textContent = '+' + currentData.system_growth.toFixed(2) + '%';
+
+  // Update section title
+  document.querySelector('.section-title').textContent = labels.title;
+
+  // Update description text based on dataset
+  const descEl = document.getElementById('section-description');
+  if (currentDataset === 'housing') {
+    descEl.innerHTML = 'Total loans to households for housing, combining <strong>owner-occupied</strong> and <strong>investment</strong> lending. This is the largest category of ADI lending in Australia.';
+  } else if (currentDataset === 'oo') {
+    descEl.innerHTML = 'Loans to households for <strong>owner-occupied</strong> housing. These are mortgages for properties where the owner lives in the home.';
+  } else {
+    descEl.innerHTML = 'Loans to households for <strong>investment</strong> housing. These are mortgages for rental properties and investment real estate.';
+  }
+
+  // Update nav bar active state
+  document.querySelectorAll('.dataset-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.dataset === dataset);
+  });
+
+  // Rebuild housingData and restart current view
+  rebuildHousingData();
+
+  // Re-render current view
+  if (currentView === 'share') renderShareView(false);
+  else if (currentView === 'growth') renderGrowthView(false);
+  else if (currentView === 'movers') renderMoversView(false);
+  else if (currentView === 'big5') renderBig5View(false);
+  else if (currentView === 'fi') {
+    populateFISelector();
+    renderFIView(false);
+  }
+}
+
+function rebuildHousingData() {
+  housingData.length = 0;
+  housingData.push(...allInstitutions.filter(d => d.housingTotal > 0));
+  housingData.forEach(d => {
+    d.hr = housingRadius(d);
+  });
+}
+
+// ═══════════════════════════════════════
+// DEPOSITS DATA PREPARATION
+// ═══════════════════════════════════════
+function buildDepositsData() {
+  depositsData = DATA_DEPOSITS.institutions.map(d => ({
+    name: d.name,
+    depositsTotal: d.deposits_total_dec,
+    depositsJun: d.deposits_total_jun,
+    marketShare: d.market_share,
+    growth: d.growth,
+    major: isMajor(d.name)
+  }));
+
+  // Sort: majors first, then by deposits total
+  depositsData.sort((a, b) => {
+    if (a.major !== b.major) return b.major - a.major;
+    return b.depositsTotal - a.depositsTotal;
+  });
+
+  // Add radius property
+  depositsData.forEach(d => {
+    d.dr = depositsRadius(d);
+  });
+}
+
+const depositsRadius = d => {
+  const scaleFactor = isMobile() ? 10 : 16;
+  const maxRadius = isMobile() ? 35 : 56;
+  const r = Math.sqrt(d.marketShare) * scaleFactor;
+  return Math.max(2, Math.min(r, maxRadius));
+};
 
 const tooltip = d3.select('#tooltip');
 
@@ -570,13 +829,45 @@ function showTooltip(event, d) {
   moveTooltip(event);
 }
 function moveTooltip(event) {
-  const tw = 260, th = 120;
-  let x = event.clientX + 16, y = event.clientY - 10;
-  if (x + tw > window.innerWidth) x = event.clientX - tw - 16;
-  if (y + th > window.innerHeight) y = event.clientY - th - 10;
+  const tooltipNode = tooltip.node();
+  const rect = tooltipNode.getBoundingClientRect();
+  const tw = rect.width || 260;
+  const th = rect.height || 120;
+
+  // Center tooltip horizontally on cursor
+  let x = event.clientX - tw / 2;
+
+  // Position above cursor by default, below if not enough space
+  let y;
+  if (event.clientY - th - 16 > 0) {
+    y = event.clientY - th - 16; // Above cursor
+  } else {
+    y = event.clientY + 16; // Below cursor
+  }
+
+  // Constrain horizontally to viewport
+  if (x < 10) x = 10;
+  if (x + tw > window.innerWidth - 10) x = window.innerWidth - tw - 10;
+
+  // Constrain vertically to viewport
+  if (y + th > window.innerHeight - 10) y = window.innerHeight - th - 10;
+  if (y < 10) y = 10;
+
   tooltip.style('left', x + 'px').style('top', y + 'px');
 }
 function hideTooltip() { tooltip.style('opacity', 0); }
+
+function showDepositsTooltip(event, d) {
+  const ms = d.marketShare;
+  const growth = d.growth;
+  const deposits = d.depositsTotal;
+  let html = `<div class="tt-name">${d.name}</div>`;
+  html += `<div class="tt-row"><span class="tt-label">Household Deposits</span><span class="tt-val">$${(deposits/1000).toFixed(1)}B</span></div>`;
+  html += `<div class="tt-row"><span class="tt-label">Market Share</span><span class="tt-val">${ms.toFixed(2)}%</span></div>`;
+  html += `<div class="tt-row"><span class="tt-label">6m Growth</span><span class="tt-val">${growth >= 0 ? '+' : ''}${growth.toFixed(2)}%</span></div>`;
+  tooltip.html(html).style('opacity', 1);
+  moveTooltip(event);
+}
 
 // ═══════════════════════════════════════
 // INTRO BEESWARM
@@ -637,9 +928,9 @@ function createIntroChart() {
     .force('center', d3.forceCenter(width/2, height/2))
     .force('charge', d3.forceManyBody().strength(d => d.major ? -2 : -0.5))
     .force('collide', d3.forceCollide(d => d.r + 1.5).strength(0.8))
-    .force('x', d3.forceX(width/2).strength(0.04))
-    .force('y', d3.forceY(height/2).strength(0.04))
-    .alphaDecay(0.015)
+    .force('x', d3.forceX(width/2).strength(0.14))
+    .force('y', d3.forceY(height/2).strength(0.14))
+    .alphaDecay(0.15)
     .on('tick', () => {
       circles.attr('cx', d => d.x).attr('cy', d => d.y);
       labels.attr('x', d => d.x).attr('y', d => d.y + 3.5);
@@ -648,7 +939,7 @@ function createIntroChart() {
   // Add click interaction for magnetic push effect
   introSVG.on('click', function(event) {
     const [clickX, clickY] = d3.pointer(event);
-    const pushStrength = 80;
+    const pushStrength = 40;
 
     introNodes.forEach(node => {
       const dx = node.x - clickX;
@@ -674,6 +965,14 @@ let housingSVG, housingGroup, housingWidth, housingHeight;
 let currentView = 'share';
 let housingSim = null;
 
+// ═══════════════════════════════════════
+// DEPOSITS SECTION VARIABLES
+// ═══════════════════════════════════════
+let depositsSVG, depositsGroup, depositsWidth, depositsHeight;
+let currentDepositsView = 'share';
+let depositsSim = null;
+let depositsData = [];
+
 // Responsive margin and sizing based on screen width
 const isMobile = () => window.innerWidth <= 768;
 const getMargin = () => isMobile()
@@ -682,7 +981,7 @@ const getMargin = () => isMobile()
 const margin = getMargin();
 
 // Only institutions with housing loans
-const housingData = allInstitutions.filter(d => d.housingTotal > 0);
+let housingData = allInstitutions.filter(d => d.housingTotal > 0);
 
 const housingRadius = d => {
   const scaleFactor = isMobile() ? 10 : 16;
@@ -722,6 +1021,39 @@ function createHousingChart() {
 
   // Draw initial view
   renderShareView(false);
+}
+
+function createDepositsChart() {
+  const container = document.getElementById('deposits-chart');
+  // Constrain width on mobile to prevent overflow, with minimum width
+  depositsWidth = isMobile()
+    ? Math.max(425, Math.min(container.clientWidth, window.innerWidth - 32))
+    : container.clientWidth;
+  // Responsive height: smaller minimum for mobile
+  const minHeight = isMobile() ? 450 : 600;
+  const viewportRatio = isMobile() ? 0.6 : 0.7;
+  depositsHeight = Math.max(minHeight, window.innerHeight * viewportRatio);
+
+  depositsSVG = d3.select('#deposits-chart')
+    .append('svg')
+    .attr('width', depositsWidth)
+    .attr('height', depositsHeight);
+
+  depositsGroup = depositsSVG.append('g');
+
+  // Create nodes
+  depositsData.forEach(d => {
+    d.dr = depositsRadius(d);
+    d.dx = depositsWidth / 2;
+    d.dy = depositsHeight / 2;
+  });
+
+  // Axis group
+  depositsSVG.append('g').attr('class', 'deposits-axis-group');
+  depositsSVG.append('g').attr('class', 'deposits-ref-group');
+
+  // Draw initial view
+  renderDepositsShareView(false);
 }
 
 function renderShareView(animate = true) {
@@ -773,7 +1105,7 @@ function renderShareView(animate = true) {
     .force('x', d3.forceX(d => d.targetX).strength(0.12))
     .force('y', d3.forceY(d => d.targetY).strength(0.5))
     .force('collide', d3.forceCollide(d => d.hr + 1.5).strength(0.85))
-    .alphaDecay(0.02)
+    .alphaDecay(0.08)
     .on('tick', () => {
       // Constrain circles within bounds
       housingData.forEach(d => {
@@ -790,7 +1122,7 @@ function renderShareView(animate = true) {
 function renderGrowthView(animate = true) {
   currentView = 'growth';
   const dur = animate ? 700 : 0;
-  const systemGrowth = DATA.system_growth;
+  const systemGrowth = getCurrentData().system_growth;
   const m = getMargin();
 
   // Y scale for growth (vertical, higher on top)
@@ -843,7 +1175,7 @@ function renderGrowthView(animate = true) {
     .attr('x', m.left - 16).attr('y', refY - 6)
     .attr('text-anchor', 'end')
     .attr('class', 'growth-ref-label')
-    .text(`System +${systemGrowth.toFixed(1)}%`)
+    .text(`S +${systemGrowth.toFixed(1)}%`)
     .attr('opacity', 0)
     .transition().duration(dur).attr('opacity', 1);
 
@@ -860,7 +1192,7 @@ function renderGrowthView(animate = true) {
     .force('x', d3.forceX(d => d.targetX).strength(0.12))
     .force('y', d3.forceY(d => d.targetY).strength(0.5))
     .force('collide', d3.forceCollide(d => d.hr + 1.5).strength(0.85))
-    .alphaDecay(0.02)
+    .alphaDecay(0.08)
     .on('tick', () => {
       // Constrain circles within bounds
       housingData.forEach(d => {
@@ -1172,6 +1504,28 @@ function renderBig5View(animate = true) {
     .transition().duration(dur).attr('opacity', 0.5);
 }
 
+function populateFISelector() {
+  const selectEl = document.getElementById('bankSelect');
+  // Clear existing options
+  selectEl.innerHTML = '';
+
+  // Populate with current dataset
+  const sortedHousing = [...housingData].sort((a, b) => a.name.localeCompare(b.name));
+  sortedHousing.forEach(d => {
+    const option = document.createElement('option');
+    option.value = d.name;
+    option.text = d.name;
+    selectEl.appendChild(option);
+  });
+
+  // Set default to CBA if available
+  if (sortedHousing.some(d => d.name === 'Commonwealth Bank of Australia')) {
+    selectEl.value = 'Commonwealth Bank of Australia';
+  } else if (sortedHousing.length > 0) {
+    selectEl.value = sortedHousing[0].name;
+  }
+}
+
 function renderFIView(animate = true) {
   currentView = 'fi';
 
@@ -1185,18 +1539,9 @@ function renderFIView(animate = true) {
   // Clear existing circles and labels
   housingGroup.selectAll('*').remove();
 
-  // Show FI selector if not already populated
-  const selectEl = document.getElementById('bankSelect');
-  if (selectEl.options.length === 0) {
-    const sortedHousing = [...housingData].sort((a, b) => a.name.localeCompare(b.name));
-    sortedHousing.forEach(d => {
-      const option = document.createElement('option');
-      option.value = d.name;
-      option.text = d.name;
-      selectEl.appendChild(option);
-    });
-    // Set default to CBA
-    selectEl.value = 'Commonwealth Bank of Australia';
+  // Populate FI selector if needed
+  if (document.getElementById('bankSelect').options.length === 0) {
+    populateFISelector();
   }
 
   updateFIDetails();
@@ -1225,8 +1570,8 @@ function updateFIDetails() {
 
   // Create details display
   const details = [
-    { label: 'Housing Loans (Dec)', value: '$' + (bankData.housingTotal / 1000).toFixed(2) + 'B' },
-    { label: 'Housing Loans (Jun)', value: '$' + (bankData.housingJun / 1000).toFixed(2) + 'B' },
+    { label: 'Housing Loans (Dec 25)', value: '$' + (bankData.housingTotal / 1000).toFixed(2) + 'B' },
+    { label: 'Housing Loans (Jun 25)', value: '$' + (bankData.housingJun / 1000).toFixed(2) + 'B' },
     { label: 'Market Share', value: bankData.marketShare.toFixed(2) + '%' },
     { label: '6m Growth', value: (bankData.growth >= 0 ? '+' : '') + bankData.growth.toFixed(2) + '%' },
     { label: 'System Growth', value: '+' + DATA.system_growth.toFixed(2) + '%' },
@@ -1266,6 +1611,589 @@ function updateFIDetails() {
         .attr('stroke-width', 1);
     }
   });
+}
+
+// ═══════════════════════════════════════
+// DEPOSITS SECTION RENDERING FUNCTIONS
+// ═══════════════════════════════════════
+
+function updateDepositsCircles(dur) {
+  const circles = depositsGroup.selectAll('circle').data(depositsData, d => d.name);
+
+  circles.exit().remove();
+
+  const enter = circles.enter().append('circle')
+    .attr('r', 0)
+    .attr('cx', d => d.dx || depositsWidth / 2)
+    .attr('cy', d => d.dy || depositsHeight / 2)
+    .attr('fill', d => getColor(d.name))
+    .style('cursor', 'pointer')
+    .on('mouseover', showDepositsTooltip)
+    .on('mousemove', showDepositsTooltip)
+    .on('mouseout', hideTooltip);
+
+  circles.merge(enter)
+    .transition().duration(dur)
+    .attr('r', d => d.dr)
+    .attr('fill', d => {
+      if (currentDepositsView === 'growth') {
+        return d.growth >= DATA_DEPOSITS.system_growth ? '#22c55e' : '#ef4444';
+      }
+      return getColor(d.name);
+    });
+
+  // Labels
+  const labels = depositsGroup.selectAll('.deposits-label').data(
+    depositsData.filter(d => d.major || d.marketShare > 1.5),
+    d => d.name
+  );
+
+  labels.exit().remove();
+
+  const enterLabels = labels.enter().append('text')
+    .attr('class', 'deposits-label')
+    .attr('text-anchor', 'middle')
+    .attr('font-size', d => {
+      if (d.major) return isMobile() ? '11px' : '12px';
+      return isMobile() ? '9px' : '10px';
+    })
+    .attr('font-weight', d => d.major ? '700' : '600')
+    .attr('fill', '#ffffff')
+    .attr('pointer-events', 'none')
+    .style('user-select', 'none')
+    .attr('opacity', 0);
+
+  labels.merge(enterLabels)
+    .text(d => getShort(d.name) || d.name)
+    .transition().duration(dur)
+    .attr('opacity', 1);
+}
+
+function tickDeposits() {
+  depositsGroup.selectAll('circle')
+    .attr('cx', d => d.x)
+    .attr('cy', d => d.y);
+
+  depositsGroup.selectAll('.deposits-label')
+    .attr('x', d => d.x)
+    .attr('y', d => d.y + 3.5);
+}
+
+function renderDepositsShareView(animate = true) {
+  currentDepositsView = 'share';
+  const dur = animate ? 700 : 0;
+  const m = getMargin();
+  const chartH = depositsHeight - m.top - m.bottom;
+
+  // Y scale by market share (flipped: higher on top)
+  const yScale = d3.scaleLinear()
+    .domain([0, 28])
+    .range([depositsHeight - m.bottom, m.top + 20]);
+
+  // Clear axis / ref
+  depositsSVG.select('.deposits-axis-group').selectAll('*').remove();
+  depositsSVG.select('.deposits-ref-group').selectAll('*').remove();
+
+  // Y axis ticks
+  const axisTicks = [0, 5, 10, 15, 20, 25];
+  const axisG = depositsSVG.select('.deposits-axis-group');
+  axisTicks.forEach(t => {
+    const y = yScale(t);
+    axisG.append('line')
+      .attr('x1', m.left - 10).attr('x2', depositsWidth - m.right)
+      .attr('y1', y).attr('y2', y)
+      .attr('stroke', '#E8E4DD').attr('stroke-width', 0.7)
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+
+    axisG.append('text')
+      .attr('x', m.left - 16).attr('y', y + 3.5)
+      .attr('text-anchor', 'end')
+      .attr('class', 'axis-label')
+      .text(t + '%')
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // Target positions
+  const centerX = depositsWidth / 2;
+  depositsData.forEach(d => {
+    d.targetX = centerX;
+    d.targetY = yScale(d.marketShare);
+  });
+
+  // Simulation with boundary constraints
+  if (depositsSim) depositsSim.stop();
+  depositsSim = d3.forceSimulation(depositsData)
+    .force('x', d3.forceX(d => d.targetX).strength(0.12))
+    .force('y', d3.forceY(d => d.targetY).strength(0.5))
+    .force('collide', d3.forceCollide(d => d.dr + 1.5).strength(0.85))
+    .alphaDecay(0.08)
+    .on('tick', () => {
+      // Constrain circles within bounds
+      depositsData.forEach(d => {
+        const m = getMargin();
+        d.x = Math.max(m.left + d.dr, Math.min(depositsWidth - m.right - d.dr, d.x));
+        d.y = Math.max(m.top + d.dr, Math.min(depositsHeight - m.bottom - d.dr, d.y));
+      });
+      tickDeposits();
+    });
+
+  updateDepositsCircles(dur);
+}
+
+function renderDepositsGrowthView(animate = true) {
+  currentDepositsView = 'growth';
+  const dur = animate ? 700 : 0;
+  const systemGrowth = DATA_DEPOSITS.system_growth;
+  const m = getMargin();
+
+  // Y scale for growth (vertical, higher on top)
+  const growthExtent = d3.extent(depositsData, d => d.growth);
+  const yMin = Math.min(-2, growthExtent[0] - 1);
+  const yMax = Math.max(growthExtent[1] + 2, systemGrowth + 2);
+
+  const yScale = d3.scaleLinear()
+    .domain([yMin, yMax])
+    .range([depositsHeight - m.bottom, m.top + 20]);
+
+  // Clear axis / ref
+  depositsSVG.select('.deposits-axis-group').selectAll('*').remove();
+  depositsSVG.select('.deposits-ref-group').selectAll('*').remove();
+
+  const axisG = depositsSVG.select('.deposits-axis-group');
+  const refG = depositsSVG.select('.deposits-ref-group');
+
+  // Y axis ticks (20% intervals)
+  const ticks = d3.range(Math.ceil(yMin / 20) * 20, Math.floor(yMax) + 1, 20);
+
+  ticks.forEach(t => {
+    const y = yScale(t);
+    axisG.append('line')
+      .attr('x1', m.left - 10).attr('x2', depositsWidth - m.right)
+      .attr('y1', y).attr('y2', y)
+      .attr('stroke', '#E8E4DD').attr('stroke-width', 0.7)
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+
+    axisG.append('text')
+      .attr('x', m.left - 16).attr('y', y + 3.5)
+      .attr('text-anchor', 'end')
+      .attr('class', 'axis-label')
+      .text((t >= 0 ? '+' : '') + t + '%')
+      .attr('opacity', 0)
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // System growth reference line
+  const refY = yScale(systemGrowth);
+  refG.append('line')
+    .attr('x1', m.left - 10).attr('x2', depositsWidth - m.right)
+    .attr('y1', refY).attr('y2', refY)
+    .attr('class', 'growth-reference')
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 0.7);
+
+  refG.append('text')
+    .attr('x', m.left - 16).attr('y', refY - 6)
+    .attr('text-anchor', 'end')
+    .attr('class', 'growth-ref-label')
+    .text(`S +${systemGrowth.toFixed(1)}%`)
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 1);
+
+  // Targets
+  const centerX = depositsWidth / 2;
+  depositsData.forEach(d => {
+    d.targetX = centerX;
+    d.targetY = yScale(d.growth);
+  });
+
+  // Simulation with boundary constraints
+  if (depositsSim) depositsSim.stop();
+  depositsSim = d3.forceSimulation(depositsData)
+    .force('x', d3.forceX(d => d.targetX).strength(0.12))
+    .force('y', d3.forceY(d => d.targetY).strength(0.5))
+    .force('collide', d3.forceCollide(d => d.dr + 1.5).strength(0.85))
+    .alphaDecay(0.08)
+    .on('tick', () => {
+      // Constrain circles within bounds
+      depositsData.forEach(d => {
+        const m = getMargin();
+        d.x = Math.max(m.left + d.dr, Math.min(depositsWidth - m.right - d.dr, d.x));
+        d.y = Math.max(m.top + d.dr, Math.min(depositsHeight - m.bottom - d.dr, d.y));
+      });
+      tickDeposits();
+    });
+
+  updateDepositsCircles(dur);
+}
+
+function renderDepositsMoversView(animate = true) {
+  currentDepositsView = 'movers';
+  const dur = animate ? 700 : 0;
+
+  // Clear axis and ref
+  depositsSVG.select('.deposits-axis-group').selectAll('*').remove();
+  depositsSVG.select('.deposits-ref-group').selectAll('*').remove();
+
+  // Stop simulation
+  if (depositsSim) depositsSim.stop();
+
+  // Clear existing circles and labels
+  depositsGroup.selectAll('*').remove();
+
+  // Get top 5 and bottom 5 by growth (highest to lowest)
+  const sorted = [...depositsData].sort((a, b) => b.growth - a.growth);
+  const topBottom = [...sorted.slice(0, 5), ...sorted.slice(-5)];
+
+  // Custom margins for Movers view to accommodate labels
+  const m = isMobile()
+    ? { top: 40, right: 80, bottom: 60, left: 150 }
+    : { top: 30, right: 80, bottom: 50, left: 200 };
+
+  const chartWidth = depositsWidth - m.left - m.right;
+  const chartHeight = depositsHeight - m.top - m.bottom;
+  const barHeight = Math.min(40, chartHeight / (topBottom.length + 1));
+  const barGap = 8;
+
+  const maxGrowth = Math.max(...topBottom.map(d => Math.abs(d.growth)));
+  const xScale = d3.scaleLinear()
+    .domain([-maxGrowth, maxGrowth])
+    .range([m.left, depositsWidth - m.right]);
+
+  const zeroX = xScale(0);
+
+  // Helper function to wrap text
+  function wrapText(text, width) {
+    const words = text.split(/\s+/);
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const testLine = currentLine + ' ' + words[i];
+      if (testLine.length * 6 < width) {
+        currentLine = testLine;
+      } else {
+        lines.push(currentLine);
+        currentLine = words[i];
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
+
+  // Draw bars
+  topBottom.forEach((d, i) => {
+    const y = m.top + i * (barHeight + barGap);
+    const barWidth = Math.abs(xScale(d.growth) - zeroX);
+    const barX = d.growth >= 0 ? zeroX : xScale(d.growth);
+    const color = d.growth >= DATA_DEPOSITS.system_growth ? '#22c55e' : '#ef4444';
+
+    depositsGroup.append('rect')
+      .attr('x', zeroX)
+      .attr('y', y)
+      .attr('width', 0)
+      .attr('height', barHeight)
+      .attr('fill', color)
+      .attr('opacity', 0.8)
+      .transition().duration(dur)
+      .attr('x', barX)
+      .attr('width', barWidth);
+
+    // Use short name or wrap full name
+    const displayName = getShort(d.name) || d.name;
+    const lines = wrapText(displayName, m.left - 20);
+    const lineHeight = 12;
+    const textY = y + barHeight / 2 - ((lines.length - 1) * lineHeight) / 2;
+
+    const textGroup = depositsGroup.append('text')
+      .attr('x', m.left - 10)
+      .attr('text-anchor', 'end')
+      .attr('font-size', '11px')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0);
+
+    lines.forEach((line, idx) => {
+      textGroup.append('tspan')
+        .attr('x', m.left - 10)
+        .attr('y', textY + idx * lineHeight + 4)
+        .text(line);
+    });
+
+    textGroup.transition().duration(dur).attr('opacity', 1);
+
+    depositsGroup.append('text')
+      .attr('x', d.growth >= 0 ? barX + barWidth + 8 : barX - 8)
+      .attr('y', y + barHeight / 2 + 4)
+      .attr('text-anchor', d.growth >= 0 ? 'start' : 'end')
+      .attr('font-size', '13px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0)
+      .text((d.growth >= 0 ? '+' : '') + d.growth.toFixed(2) + '%')
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // Draw zero line (only spanning the bar chart area)
+  const firstBarY = m.top;
+  const lastBarY = m.top + (topBottom.length - 1) * (barHeight + barGap) + barHeight;
+
+  depositsGroup.append('line')
+    .attr('x1', zeroX).attr('x2', zeroX)
+    .attr('y1', firstBarY).attr('y2', lastBarY)
+    .attr('stroke', 'var(--text-muted)')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-dasharray', '4,4')
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 0.5);
+}
+
+function renderDepositsBig5View(animate = true) {
+  currentDepositsView = 'big5';
+  const dur = animate ? 700 : 0;
+
+  // Clear axis and ref
+  depositsSVG.select('.deposits-axis-group').selectAll('*').remove();
+  depositsSVG.select('.deposits-ref-group').selectAll('*').remove();
+
+  // Stop simulation
+  if (depositsSim) depositsSim.stop();
+
+  // Clear existing circles and labels
+  depositsGroup.selectAll('*').remove();
+
+  // Get Big 4 + Macquarie
+  const big5Names = [
+    'Commonwealth Bank of Australia',
+    'National Australia Bank Limited',
+    'Australia and New Zealand Banking Group Limited',
+    'Westpac Banking Corporation',
+    'Macquarie Bank Limited'
+  ];
+  const big5Data = depositsData.filter(d => big5Names.includes(d.name))
+    .sort((a, b) => b.growth - a.growth);
+
+  // Custom margins for Big5 view to accommodate labels
+  const m = isMobile()
+    ? { top: 50, right: 80, bottom: 60, left: 110 }
+    : { top: 30, right: 80, bottom: 50, left: 120 };
+
+  const chartWidth = depositsWidth - m.left - m.right;
+  const chartHeight = depositsHeight - m.top - m.bottom;
+  const barHeight = Math.min(60, chartHeight / (big5Data.length + 1));
+  const barGap = 12;
+
+  const maxGrowth = Math.max(...big5Data.map(d => Math.abs(d.growth)));
+  const xScale = d3.scaleLinear()
+    .domain([-maxGrowth, maxGrowth])
+    .range([m.left, depositsWidth - m.right]);
+
+  const zeroX = xScale(0);
+
+  // Draw bars
+  big5Data.forEach((d, i) => {
+    const y = m.top + 40 + i * (barHeight + barGap);
+    const barWidth = Math.abs(xScale(d.growth) - zeroX);
+    const barX = d.growth >= 0 ? zeroX : xScale(d.growth);
+    const color = d.growth >= DATA_DEPOSITS.system_growth ? '#22c55e' : '#ef4444';
+
+    depositsGroup.append('rect')
+      .attr('x', zeroX)
+      .attr('y', y)
+      .attr('width', 0)
+      .attr('height', barHeight)
+      .attr('fill', color)
+      .attr('opacity', 0.8)
+      .transition().duration(dur)
+      .attr('x', barX)
+      .attr('width', barWidth);
+
+    depositsGroup.append('text')
+      .attr('x', m.left - 10)
+      .attr('y', y + barHeight / 2 + 5)
+      .attr('text-anchor', 'end')
+      .attr('font-size', '13px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0)
+      .text(getShort(d.name))
+      .transition().duration(dur).attr('opacity', 1);
+
+    depositsGroup.append('text')
+      .attr('x', d.growth >= 0 ? barX + barWidth + 8 : barX - 8)
+      .attr('y', y + barHeight / 2 + 5)
+      .attr('text-anchor', d.growth >= 0 ? 'start' : 'end')
+      .attr('font-size', '14px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .attr('opacity', 0)
+      .text((d.growth >= 0 ? '+' : '') + d.growth.toFixed(2) + '%')
+      .transition().duration(dur).attr('opacity', 1);
+  });
+
+  // Draw zero line (only spanning the bar chart area)
+  const firstBarY = m.top + 40;
+  const lastBarY = m.top + 40 + (big5Data.length - 1) * (barHeight + barGap) + barHeight;
+
+  depositsGroup.append('line')
+    .attr('x1', zeroX).attr('x2', zeroX)
+    .attr('y1', firstBarY).attr('y2', lastBarY)
+    .attr('stroke', 'var(--text-muted)')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-dasharray', '4,4')
+    .attr('opacity', 0)
+    .transition().duration(dur).attr('opacity', 0.5);
+}
+
+function renderDepositsFIView(animate = true) {
+  currentDepositsView = 'fi';
+
+  // Clear axis and ref
+  depositsSVG.select('.deposits-axis-group').selectAll('*').remove();
+  depositsSVG.select('.deposits-ref-group').selectAll('*').remove();
+
+  // Stop simulation
+  if (depositsSim) depositsSim.stop();
+
+  // Clear existing circles and labels
+  depositsGroup.selectAll('*').remove();
+
+  // Populate FI selector if needed
+  if (document.getElementById('depositsBankSelect').options.length === 0) {
+    populateDepositsFISelector();
+  }
+
+  updateDepositsFIDetails();
+}
+
+function populateDepositsFISelector() {
+  const selectEl = document.getElementById('depositsBankSelect');
+  // Clear existing options
+  selectEl.innerHTML = '';
+
+  // Populate with current dataset
+  const sortedDeposits = [...depositsData].sort((a, b) => a.name.localeCompare(b.name));
+  sortedDeposits.forEach(d => {
+    const option = document.createElement('option');
+    option.value = d.name;
+    option.text = d.name;
+    selectEl.appendChild(option);
+  });
+
+  // Set default to CBA if available
+  if (sortedDeposits.some(d => d.name === 'Commonwealth Bank of Australia')) {
+    selectEl.value = 'Commonwealth Bank of Australia';
+  } else if (sortedDeposits.length > 0) {
+    selectEl.value = sortedDeposits[0].name;
+  }
+}
+
+function updateDepositsFIDetails() {
+  const selectEl = document.getElementById('depositsBankSelect');
+  const bankName = selectEl.value;
+  const bankData = depositsData.find(d => d.name === bankName);
+
+  if (!bankData) return;
+
+  // Clear existing content
+  depositsGroup.selectAll('*').remove();
+
+  const m = getMargin();
+
+  // Add institution name as title
+  depositsGroup.append('text')
+    .attr('x', m.left + 20)
+    .attr('y', m.top + 30)
+    .attr('font-size', isMobile() ? '16px' : '18px')
+    .attr('font-weight', '700')
+    .attr('fill', 'var(--text-primary)')
+    .text(bankData.name);
+
+  // Create details display
+  const details = [
+    { label: 'Deposits (Dec 25)', value: '$' + (bankData.depositsTotal / 1000).toFixed(2) + 'B' },
+    { label: 'Deposits (Jun 25)', value: '$' + (bankData.depositsJun / 1000).toFixed(2) + 'B' },
+    { label: 'Market Share', value: bankData.marketShare.toFixed(2) + '%' },
+    { label: '6m Growth', value: (bankData.growth >= 0 ? '+' : '') + bankData.growth.toFixed(2) + '%' },
+    { label: 'System Growth', value: '+' + DATA_DEPOSITS.system_growth.toFixed(2) + '%' },
+    { label: 'vs System Growth', value: bankData.growth >= DATA_DEPOSITS.system_growth ? 'Above (+' + (bankData.growth - DATA_DEPOSITS.system_growth).toFixed(2) + '%)' : 'Below (' + (bankData.growth - DATA_DEPOSITS.system_growth).toFixed(2) + '%)' }
+  ];
+
+  const lineHeight = 45;
+  const startY = m.top + 70;
+
+  details.forEach((item, i) => {
+    const y = startY + i * lineHeight;
+
+    depositsGroup.append('text')
+      .attr('x', m.left + 20)
+      .attr('y', y)
+      .attr('font-size', '13px')
+      .attr('fill', 'var(--text-muted)')
+      .text(item.label);
+
+    depositsGroup.append('text')
+      .attr('x', depositsWidth - m.right - 20)
+      .attr('y', y)
+      .attr('text-anchor', 'end')
+      .attr('font-size', '14px')
+      .attr('font-weight', '600')
+      .attr('fill', 'var(--text-primary)')
+      .text(item.value);
+
+    // Draw separator line
+    if (i < details.length - 1) {
+      depositsGroup.append('line')
+        .attr('x1', m.left + 20)
+        .attr('x2', depositsWidth - m.right - 20)
+        .attr('y1', y + lineHeight / 2)
+        .attr('y2', y + lineHeight / 2)
+        .attr('stroke', 'rgba(0,0,0,0.05)')
+        .attr('stroke-width', 1);
+    }
+  });
+}
+
+function switchDepositsView(view) {
+  // Update button active states (scoped to deposits section)
+  const depositsSection = document.getElementById('deposits');
+  depositsSection.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  depositsSection.querySelector(`[data-view="${view}"]`).classList.add('active');
+
+  // Stop any running simulation
+  if (depositsSim) depositsSim.stop();
+
+  // Clear SVG elements
+  depositsGroup.selectAll('*').remove();
+  depositsSVG.select('.deposits-axis-group').selectAll('*').remove();
+  depositsSVG.select('.deposits-ref-group').selectAll('*').remove();
+
+  // Show/hide info elements
+  const infoEl = document.getElementById('depositsChartInfo');
+  const fiSelectorEl = document.getElementById('depositsFiSelector');
+  infoEl.style.display = 'none';
+  fiSelectorEl.style.display = 'none';
+
+  // Render appropriate view
+  if (view === 'growth') {
+    infoEl.innerHTML = 'Circle size: <strong style="color: var(--text-primary);">Market Share</strong> · Vertical axis: <strong style="color: var(--text-primary);">6m Growth</strong> · <span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system';
+    infoEl.style.display = 'block';
+    renderDepositsGrowthView(true);
+  } else if (view === 'share') {
+    renderDepositsShareView(true);
+  } else if (view === 'movers') {
+    infoEl.innerHTML = '<span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system';
+    infoEl.style.display = 'block';
+    renderDepositsMoversView(true);
+  } else if (view === 'big5') {
+    infoEl.innerHTML = '<span style="color: #22c55e; font-weight: 600;">Green</span>: ≥ system · <span style="color: #ef4444; font-weight: 600;">Red</span>: &lt; system';
+    infoEl.style.display = 'block';
+    renderDepositsBig5View(true);
+  } else if (view === 'fi') {
+    fiSelectorEl.style.display = 'block';
+    renderDepositsFIView(true);
+  }
 }
 
 function switchView(view) {
@@ -1324,12 +2252,16 @@ function handleScroll() {
   // Update navbar title based on section
   const housingSection = document.getElementById('housing');
   const housingRect = housingSection.getBoundingClientRect();
+  const depositsSection = document.getElementById('deposits');
+  const depositsRect = depositsSection.getBoundingClientRect();
   const navLogo = document.querySelector('.nav-logo');
 
-  if (housingRect.top <= 100) {
-    navLogo.innerHTML = 'APRA Market Share <span>/ Housing Loans</span>';
+  if (depositsRect.top <= 100 && depositsRect.bottom > 100) {
+    navLogo.innerHTML = 'Market Share <span>/ Deposits by Households</span>';
+  } else if (housingRect.top <= 100) {
+    navLogo.innerHTML = 'Market Share <span>/ Housing Loans</span>';
   } else {
-    navLogo.innerHTML = 'APRA Market Share <span>/ Dashboard</span>';
+    navLogo.innerHTML = 'Market Share <span>/ Dashboard</span>';
   }
 
   // Trigger housing chart when section in view
@@ -1387,11 +2319,46 @@ window.addEventListener('resize', () => {
     } else if (currentView === 'fi') {
       renderFIView(false);
     }
+
+    // Handle deposits chart resize
+    const depositsContainer = document.getElementById('deposits-chart');
+    if (depositsContainer) {
+      depositsWidth = isMobile()
+        ? Math.max(425, Math.min(depositsContainer.clientWidth, window.innerWidth - 32))
+        : depositsContainer.clientWidth;
+      const depositsMinHeight = isMobile() ? 450 : 600;
+      const depositsViewportRatio = isMobile() ? 0.6 : 0.7;
+      depositsHeight = Math.max(depositsMinHeight, window.innerHeight * depositsViewportRatio);
+
+      // Update SVG dimensions
+      depositsSVG.attr('width', depositsWidth).attr('height', depositsHeight);
+
+      // Recalculate radii
+      depositsData.forEach(d => {
+        d.dr = depositsRadius(d);
+      });
+
+      // Re-render current view
+      if (currentDepositsView === 'share') {
+        renderDepositsShareView(false);
+      } else if (currentDepositsView === 'growth') {
+        renderDepositsGrowthView(false);
+      } else if (currentDepositsView === 'movers') {
+        renderDepositsMoversView(false);
+      } else if (currentDepositsView === 'big5') {
+        renderDepositsBig5View(false);
+      } else if (currentDepositsView === 'fi') {
+        renderDepositsFIView(false);
+      }
+    }
   }, 250);
 });
 
 createIntroChart();
 createHousingChart();
+buildDepositsData();
+populateDepositsFISelector();
+createDepositsChart();
 </script>
 </body>
 </html>
