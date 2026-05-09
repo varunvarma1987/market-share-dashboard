@@ -1,0 +1,574 @@
+{
+  "institutions": [
+    {
+      "name": "Australia and New Zealand Banking Group Limited",
+      "deposits_total_dec": 193834.6,
+      "deposits_total_jun": 185291.0,
+      "market_share": 11.3174,
+      "growth": 4.6109
+    },
+    {
+      "name": "Heritage and People's Choice Limited",
+      "deposits_total_dec": 17953.4,
+      "deposits_total_jun": 17285.3,
+      "market_share": 1.0482,
+      "growth": 3.8651
+    },
+    {
+      "name": "Queensland Country Bank Limited",
+      "deposits_total_dec": 2874.7,
+      "deposits_total_jun": 2650.9,
+      "market_share": 0.1678,
+      "growth": 8.4424
+    },
+    {
+      "name": "Credit Union SA Ltd",
+      "deposits_total_dec": 1661.9,
+      "deposits_total_jun": 1566.5,
+      "market_share": 0.097,
+      "growth": 6.09
+    },
+    {
+      "name": "Members Banking Group Limited",
+      "deposits_total_dec": 2327.3,
+      "deposits_total_jun": 2315.3,
+      "market_share": 0.1359,
+      "growth": 0.5183
+    },
+    {
+      "name": "Beyond Bank Australia Limited",
+      "deposits_total_dec": 7040.8,
+      "deposits_total_jun": 6736.8,
+      "market_share": 0.4111,
+      "growth": 4.5125
+    },
+    {
+      "name": "Central West Credit Union Limited",
+      "deposits_total_dec": 240.7,
+      "deposits_total_jun": 227.3,
+      "market_share": 0.0141,
+      "growth": 5.8953
+    },
+    {
+      "name": "Teachers Mutual Bank Limited",
+      "deposits_total_dec": 8988.2,
+      "deposits_total_jun": 8644.7,
+      "market_share": 0.5248,
+      "growth": 3.9735
+    },
+    {
+      "name": "Goulburn Murray Credit Union Co-operative Limited",
+      "deposits_total_dec": 454.8,
+      "deposits_total_jun": 427.2,
+      "market_share": 0.0266,
+      "growth": 6.4607
+    },
+    {
+      "name": "Taiwan Cooperative Bank, Ltd",
+      "deposits_total_dec": 2.3,
+      "deposits_total_jun": 2.3,
+      "market_share": 0.0001,
+      "growth": 0.0
+    },
+    {
+      "name": "Norfina Limited",
+      "deposits_total_dec": 39224.9,
+      "deposits_total_jun": 37522.7,
+      "market_share": 2.2902,
+      "growth": 4.5365
+    },
+    {
+      "name": "Heartland Bank Australia Limited",
+      "deposits_total_dec": 1084.9,
+      "deposits_total_jun": 1099.6,
+      "market_share": 0.0633,
+      "growth": -1.3368
+    },
+    {
+      "name": "Mega International Commercial Bank Co., Ltd.",
+      "deposits_total_dec": 14.8,
+      "deposits_total_jun": 14.5,
+      "market_share": 0.0009,
+      "growth": 2.069
+    },
+    {
+      "name": "Taishin International Bank Co., Ltd",
+      "deposits_total_dec": 0.7,
+      "deposits_total_jun": 0.7,
+      "market_share": 0.0,
+      "growth": 0.0
+    },
+    {
+      "name": "Unity Bank Limited",
+      "deposits_total_dec": 2253.8,
+      "deposits_total_jun": 0.0,
+      "market_share": 0.1316,
+      "growth": 0.0
+    },
+    {
+      "name": "Westpac Banking Corporation",
+      "deposits_total_dec": 353999.4,
+      "deposits_total_jun": 332359.5,
+      "market_share": 20.6689,
+      "growth": 6.511
+    },
+    {
+      "name": "South West Slopes Credit Union Ltd",
+      "deposits_total_dec": 255.7,
+      "deposits_total_jun": 252.8,
+      "market_share": 0.0149,
+      "growth": 1.1472
+    },
+    {
+      "name": "Summerland Financial Services Limited",
+      "deposits_total_dec": 847.2,
+      "deposits_total_jun": 816.5,
+      "market_share": 0.0495,
+      "growth": 3.76
+    },
+    {
+      "name": "Bank of China (Australia) Limited",
+      "deposits_total_dec": 5359.5,
+      "deposits_total_jun": 5069.0,
+      "market_share": 0.3129,
+      "growth": 5.7309
+    },
+    {
+      "name": "First Commercial Bank",
+      "deposits_total_dec": 6.4,
+      "deposits_total_jun": 6.6,
+      "market_share": 0.0004,
+      "growth": -3.0303
+    },
+    {
+      "name": "Bank of Sydney Ltd",
+      "deposits_total_dec": 1736.5,
+      "deposits_total_jun": 1724.4,
+      "market_share": 0.1014,
+      "growth": 0.7017
+    },
+    {
+      "name": "WAW Credit Union Co-Operative Limited",
+      "deposits_total_dec": 556.0,
+      "deposits_total_jun": 523.7,
+      "market_share": 0.0325,
+      "growth": 6.1677
+    },
+    {
+      "name": "Horizon Credit Union Ltd",
+      "deposits_total_dec": 650.5,
+      "deposits_total_jun": 614.7,
+      "market_share": 0.038,
+      "growth": 5.824
+    },
+    {
+      "name": "Arab Bank Australia Limited",
+      "deposits_total_dec": 470.6,
+      "deposits_total_jun": 438.1,
+      "market_share": 0.0275,
+      "growth": 7.4184
+    },
+    {
+      "name": "Gateway Bank Ltd",
+      "deposits_total_dec": 983.1,
+      "deposits_total_jun": 989.0,
+      "market_share": 0.0574,
+      "growth": -0.5966
+    },
+    {
+      "name": "Victoria Teachers Limited",
+      "deposits_total_dec": 3115.4,
+      "deposits_total_jun": 2998.4,
+      "market_share": 0.1819,
+      "growth": 3.9021
+    },
+    {
+      "name": "National Australia Bank Limited",
+      "deposits_total_dec": 236486.8,
+      "deposits_total_jun": 222135.2,
+      "market_share": 13.8077,
+      "growth": 6.4608
+    },
+    {
+      "name": "Police Credit Union Limited",
+      "deposits_total_dec": 1176.6,
+      "deposits_total_jun": 1130.5,
+      "market_share": 0.0687,
+      "growth": 4.0778
+    },
+    {
+      "name": "Hume Bank Limited",
+      "deposits_total_dec": 1544.4,
+      "deposits_total_jun": 1459.3,
+      "market_share": 0.0902,
+      "growth": 5.8316
+    },
+    {
+      "name": "Bank of Queensland Limited",
+      "deposits_total_dec": 33682.2,
+      "deposits_total_jun": 33574.9,
+      "market_share": 1.9666,
+      "growth": 0.3196
+    },
+    {
+      "name": "E.SUN Commercial Bank, Ltd.",
+      "deposits_total_dec": 33.6,
+      "deposits_total_jun": 26.7,
+      "market_share": 0.002,
+      "growth": 25.8427
+    },
+    {
+      "name": "QPCU Limited",
+      "deposits_total_dec": 733.1,
+      "deposits_total_jun": 707.7,
+      "market_share": 0.0428,
+      "growth": 3.5891
+    },
+    {
+      "name": "Family First Credit Union Limited",
+      "deposits_total_dec": 210.9,
+      "deposits_total_jun": 214.4,
+      "market_share": 0.0123,
+      "growth": -1.6325
+    },
+    {
+      "name": "AMP Bank Limited",
+      "deposits_total_dec": 9110.8,
+      "deposits_total_jun": 9475.5,
+      "market_share": 0.532,
+      "growth": -3.8489
+    },
+    {
+      "name": "Dnister Ukrainian Credit Co-operative Limited",
+      "deposits_total_dec": 244.1,
+      "deposits_total_jun": 243.7,
+      "market_share": 0.0143,
+      "growth": 0.1641
+    },
+    {
+      "name": "Australian Mutual Bank Ltd",
+      "deposits_total_dec": 1475.8,
+      "deposits_total_jun": 1444.5,
+      "market_share": 0.0862,
+      "growth": 2.1668
+    },
+    {
+      "name": "Industrial and Commercial Bank of China Limited",
+      "deposits_total_dec": 37.5,
+      "deposits_total_jun": 42.1,
+      "market_share": 0.0022,
+      "growth": -10.9264
+    },
+    {
+      "name": "Commonwealth Bank of Australia",
+      "deposits_total_dec": 456412.0,
+      "deposits_total_jun": 424412.1,
+      "market_share": 26.6484,
+      "growth": 7.5398
+    },
+    {
+      "name": "Newcastle Greater Mutual Group Ltd",
+      "deposits_total_dec": 17156.9,
+      "deposits_total_jun": 16533.4,
+      "market_share": 1.0017,
+      "growth": 3.7712
+    },
+    {
+      "name": "Bank of Baroda",
+      "deposits_total_dec": 4.0,
+      "deposits_total_jun": 5.6,
+      "market_share": 0.0002,
+      "growth": -28.5714
+    },
+    {
+      "name": "Wise Australia Pty Ltd",
+      "deposits_total_dec": 1734.1,
+      "deposits_total_jun": 1311.8,
+      "market_share": 0.1012,
+      "growth": 32.1924
+    },
+    {
+      "name": "Warwick Credit Union Ltd",
+      "deposits_total_dec": 377.5,
+      "deposits_total_jun": 322.8,
+      "market_share": 0.022,
+      "growth": 16.9455
+    },
+    {
+      "name": "ING Bank (Australia) Limited",
+      "deposits_total_dec": 54993.8,
+      "deposits_total_jun": 53058.8,
+      "market_share": 3.2109,
+      "growth": 3.6469
+    },
+    {
+      "name": "BNK Banking Corporation Limited",
+      "deposits_total_dec": 530.3,
+      "deposits_total_jun": 537.9,
+      "market_share": 0.031,
+      "growth": -1.4129
+    },
+    {
+      "name": "IN1Bank Ltd",
+      "deposits_total_dec": 11.2,
+      "deposits_total_jun": 1.6,
+      "market_share": 0.0007,
+      "growth": 600.0
+    },
+    {
+      "name": "First Option Bank Ltd",
+      "deposits_total_dec": 249.8,
+      "deposits_total_jun": 247.4,
+      "market_share": 0.0146,
+      "growth": 0.9701
+    },
+    {
+      "name": "Police & Nurses Limited",
+      "deposits_total_dec": 6460.3,
+      "deposits_total_jun": 6096.8,
+      "market_share": 0.3772,
+      "growth": 5.9621
+    },
+    {
+      "name": "Railways Credit Union Limited",
+      "deposits_total_dec": 727.1,
+      "deposits_total_jun": 687.7,
+      "market_share": 0.0425,
+      "growth": 5.7292
+    },
+    {
+      "name": "Orange Credit Union Limited",
+      "deposits_total_dec": 275.8,
+      "deposits_total_jun": 262.2,
+      "market_share": 0.0161,
+      "growth": 5.1869
+    },
+    {
+      "name": "China Merchants Bank Co., Ltd",
+      "deposits_total_dec": 12.7,
+      "deposits_total_jun": 12.1,
+      "market_share": 0.0007,
+      "growth": 4.9587
+    },
+    {
+      "name": "Maitland Mutual Limited",
+      "deposits_total_dec": 621.4,
+      "deposits_total_jun": 609.6,
+      "market_share": 0.0363,
+      "growth": 1.9357
+    },
+    {
+      "name": "Laboratories Credit Union Limited",
+      "deposits_total_dec": 243.8,
+      "deposits_total_jun": 248.6,
+      "market_share": 0.0142,
+      "growth": -1.9308
+    },
+    {
+      "name": "Defence Bank Limited",
+      "deposits_total_dec": 2892.6,
+      "deposits_total_jun": 2856.1,
+      "market_share": 0.1689,
+      "growth": 1.278
+    },
+    {
+      "name": "Police Bank Ltd",
+      "deposits_total_dec": 2067.0,
+      "deposits_total_jun": 1960.8,
+      "market_share": 0.1207,
+      "growth": 5.4162
+    },
+    {
+      "name": "Regional Australia Bank Ltd",
+      "deposits_total_dec": 2806.2,
+      "deposits_total_jun": 2601.2,
+      "market_share": 0.1638,
+      "growth": 7.881
+    },
+    {
+      "name": "MyState Bank Limited",
+      "deposits_total_dec": 7698.8,
+      "deposits_total_jun": 5119.5,
+      "market_share": 0.4495,
+      "growth": 50.3819
+    },
+    {
+      "name": "Australian Military Bank Ltd",
+      "deposits_total_dec": 1130.6,
+      "deposits_total_jun": 1015.6,
+      "market_share": 0.066,
+      "growth": 11.3234
+    },
+    {
+      "name": "The Capricornian Ltd",
+      "deposits_total_dec": 369.9,
+      "deposits_total_jun": 345.2,
+      "market_share": 0.0216,
+      "growth": 7.1553
+    },
+    {
+      "name": "Judo Bank Pty Ltd",
+      "deposits_total_dec": 6118.3,
+      "deposits_total_jun": 5996.5,
+      "market_share": 0.3572,
+      "growth": 2.0312
+    },
+    {
+      "name": "State Bank of India",
+      "deposits_total_dec": 4.6,
+      "deposits_total_jun": 6.9,
+      "market_share": 0.0003,
+      "growth": -33.3333
+    },
+    {
+      "name": "IMB Ltd",
+      "deposits_total_dec": 5748.9,
+      "deposits_total_jun": 5491.4,
+      "market_share": 0.3357,
+      "growth": 4.6892
+    },
+    {
+      "name": "Southern Cross Credit Union Ltd",
+      "deposits_total_dec": 729.0,
+      "deposits_total_jun": 684.9,
+      "market_share": 0.0426,
+      "growth": 6.4389
+    },
+    {
+      "name": "Alex Bank Pty Ltd",
+      "deposits_total_dec": 29.3,
+      "deposits_total_jun": 37.9,
+      "market_share": 0.0017,
+      "growth": -22.6913
+    },
+    {
+      "name": "UBS AG",
+      "deposits_total_dec": 252.0,
+      "deposits_total_jun": 321.1,
+      "market_share": 0.0147,
+      "growth": -21.5198
+    },
+    {
+      "name": "Taiwan Business Bank, Ltd",
+      "deposits_total_dec": 6.7,
+      "deposits_total_jun": 7.0,
+      "market_share": 0.0004,
+      "growth": -4.2857
+    },
+    {
+      "name": "Community First Credit Union Limited",
+      "deposits_total_dec": 1849.6,
+      "deposits_total_jun": 1848.1,
+      "market_share": 0.108,
+      "growth": 0.0812
+    },
+    {
+      "name": "Bank Australia Limited",
+      "deposits_total_dec": 13992.7,
+      "deposits_total_jun": 7813.5,
+      "market_share": 0.817,
+      "growth": 79.0836
+    },
+    {
+      "name": "Coastline Credit Union Limited",
+      "deposits_total_dec": 707.0,
+      "deposits_total_jun": 717.0,
+      "market_share": 0.0413,
+      "growth": -1.3947
+    },
+    {
+      "name": "B & E Ltd",
+      "deposits_total_dec": 1298.9,
+      "deposits_total_jun": 1236.8,
+      "market_share": 0.0758,
+      "growth": 5.021
+    },
+    {
+      "name": "HSBC Bank Australia Limited",
+      "deposits_total_dec": 18058.7,
+      "deposits_total_jun": 18578.7,
+      "market_share": 1.0544,
+      "growth": -2.7989
+    },
+    {
+      "name": "PayPal Australia Pty Limited",
+      "deposits_total_dec": 174.1,
+      "deposits_total_jun": 169.4,
+      "market_share": 0.0102,
+      "growth": 2.7745
+    },
+    {
+      "name": "Northern Inland Credit Union Limited",
+      "deposits_total_dec": 363.1,
+      "deposits_total_jun": 338.7,
+      "market_share": 0.0212,
+      "growth": 7.204
+    },
+    {
+      "name": "Police Financial Services Limited",
+      "deposits_total_dec": 2615.3,
+      "deposits_total_jun": 2477.8,
+      "market_share": 0.1527,
+      "growth": 5.5493
+    },
+    {
+      "name": "Bendigo and Adelaide Bank Limited",
+      "deposits_total_dec": 50137.6,
+      "deposits_total_jun": 48438.2,
+      "market_share": 2.9274,
+      "growth": 3.5084
+    },
+    {
+      "name": "China Construction Bank Corporation",
+      "deposits_total_dec": 7.0,
+      "deposits_total_jun": 6.4,
+      "market_share": 0.0004,
+      "growth": 9.375
+    },
+    {
+      "name": "Macarthur Credit Union Ltd",
+      "deposits_total_dec": 320.1,
+      "deposits_total_jun": 314.5,
+      "market_share": 0.0187,
+      "growth": 1.7806
+    },
+    {
+      "name": "Oversea-Chinese Banking Corporation Limited",
+      "deposits_total_dec": 0.1,
+      "deposits_total_jun": 0.1,
+      "market_share": 0.0,
+      "growth": 0.0
+    },
+    {
+      "name": "Credit Union Australia Ltd",
+      "deposits_total_dec": 13477.1,
+      "deposits_total_jun": 13021.8,
+      "market_share": 0.7869,
+      "growth": 3.4964
+    },
+    {
+      "name": "KEB HANA Bank",
+      "deposits_total_dec": 0.1,
+      "deposits_total_jun": 0.1,
+      "market_share": 0.0,
+      "growth": 0.0
+    },
+    {
+      "name": "Macquarie Bank Limited",
+      "deposits_total_dec": 101072.7,
+      "deposits_total_jun": 82485.8,
+      "market_share": 5.9013,
+      "growth": 22.5335
+    },
+    {
+      "name": "Rabobank Australia Limited",
+      "deposits_total_dec": 8303.7,
+      "deposits_total_jun": 8116.9,
+      "market_share": 0.4848,
+      "growth": 2.3014
+    }
+  ],
+  "total_market_dec": 1712716.3,
+  "total_market_jun": 1606862.2,
+  "system_growth": 6.5876
+}

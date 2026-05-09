@@ -1,0 +1,957 @@
+{
+  "oo_institutions": [
+    {
+      "name": "Beyond Bank Australia Limited",
+      "housing_total_dec": 7085.7,
+      "housing_total_jun": 6678.1,
+      "market_share": 0.4313,
+      "growth": 6.1035
+    },
+    {
+      "name": "Victoria Teachers Limited",
+      "housing_total_dec": 2706.0,
+      "housing_total_jun": 2564.4,
+      "market_share": 0.1647,
+      "growth": 5.5218
+    },
+    {
+      "name": "Regional Australia Bank Ltd",
+      "housing_total_dec": 2372.1,
+      "housing_total_jun": 2277.7,
+      "market_share": 0.1444,
+      "growth": 4.1445
+    },
+    {
+      "name": "The Capricornian Ltd",
+      "housing_total_dec": 303.9,
+      "housing_total_jun": 252.2,
+      "market_share": 0.0185,
+      "growth": 20.4996
+    },
+    {
+      "name": "KEB HANA Bank",
+      "housing_total_dec": 3.5,
+      "housing_total_jun": 3.5,
+      "market_share": 0.0002,
+      "growth": 0.0
+    },
+    {
+      "name": "Police & Nurses Limited",
+      "housing_total_dec": 6182.8,
+      "housing_total_jun": 5950.2,
+      "market_share": 0.3763,
+      "growth": 3.9091
+    },
+    {
+      "name": "Hume Bank Limited",
+      "housing_total_dec": 1214.5,
+      "housing_total_jun": 1235.4,
+      "market_share": 0.0739,
+      "growth": -1.6918
+    },
+    {
+      "name": "First Option Bank Ltd",
+      "housing_total_dec": 184.1,
+      "housing_total_jun": 174.2,
+      "market_share": 0.0112,
+      "growth": 5.6831
+    },
+    {
+      "name": "Bank of China (Australia) Limited",
+      "housing_total_dec": 5944.2,
+      "housing_total_jun": 5493.6,
+      "market_share": 0.3618,
+      "growth": 8.2023
+    },
+    {
+      "name": "Warwick Credit Union Ltd",
+      "housing_total_dec": 288.3,
+      "housing_total_jun": 280.2,
+      "market_share": 0.0175,
+      "growth": 2.8908
+    },
+    {
+      "name": "South West Slopes Credit Union Ltd",
+      "housing_total_dec": 131.6,
+      "housing_total_jun": 132.8,
+      "market_share": 0.008,
+      "growth": -0.9036
+    },
+    {
+      "name": "Police Credit Union Limited",
+      "housing_total_dec": 637.9,
+      "housing_total_jun": 603.6,
+      "market_share": 0.0388,
+      "growth": 5.6826
+    },
+    {
+      "name": "Australian Mutual Bank Ltd",
+      "housing_total_dec": 988.5,
+      "housing_total_jun": 1014.5,
+      "market_share": 0.0602,
+      "growth": -2.5628
+    },
+    {
+      "name": "Central West Credit Union Limited",
+      "housing_total_dec": 114.6,
+      "housing_total_jun": 110.3,
+      "market_share": 0.007,
+      "growth": 3.8985
+    },
+    {
+      "name": "BNK Banking Corporation Limited",
+      "housing_total_dec": 472.8,
+      "housing_total_jun": 499.5,
+      "market_share": 0.0288,
+      "growth": -5.3453
+    },
+    {
+      "name": "Laboratories Credit Union Limited",
+      "housing_total_dec": 200.8,
+      "housing_total_jun": 195.7,
+      "market_share": 0.0122,
+      "growth": 2.606
+    },
+    {
+      "name": "Commonwealth Bank of Australia",
+      "housing_total_dec": 402223.9,
+      "housing_total_jun": 391546.3,
+      "market_share": 24.4833,
+      "growth": 2.727
+    },
+    {
+      "name": "HSBC Bank Australia Limited",
+      "housing_total_dec": 24128.4,
+      "housing_total_jun": 23251.5,
+      "market_share": 1.4687,
+      "growth": 3.7714
+    },
+    {
+      "name": "Credit Union Australia Ltd",
+      "housing_total_dec": 14851.6,
+      "housing_total_jun": 14226.9,
+      "market_share": 0.904,
+      "growth": 4.391
+    },
+    {
+      "name": "Westpac Banking Corporation",
+      "housing_total_dec": 333243.4,
+      "housing_total_jun": 323479.2,
+      "market_share": 20.2845,
+      "growth": 3.0185
+    },
+    {
+      "name": "Norfina Limited",
+      "housing_total_dec": 40676.0,
+      "housing_total_jun": 40453.2,
+      "market_share": 2.4759,
+      "growth": 0.5508
+    },
+    {
+      "name": "Coastline Credit Union Limited",
+      "housing_total_dec": 503.4,
+      "housing_total_jun": 494.6,
+      "market_share": 0.0306,
+      "growth": 1.7792
+    },
+    {
+      "name": "Unity Bank Limited",
+      "housing_total_dec": 1980.0,
+      "housing_total_jun": 0.0,
+      "market_share": 0.1205,
+      "growth": 0.0
+    },
+    {
+      "name": "AMP Bank Limited",
+      "housing_total_dec": 14143.6,
+      "housing_total_jun": 13918.2,
+      "market_share": 0.8609,
+      "growth": 1.6195
+    },
+    {
+      "name": "Credit Union SA Ltd",
+      "housing_total_dec": 1366.8,
+      "housing_total_jun": 1279.3,
+      "market_share": 0.0832,
+      "growth": 6.8397
+    },
+    {
+      "name": "UBS AG",
+      "housing_total_dec": 77.9,
+      "housing_total_jun": 97.7,
+      "market_share": 0.0047,
+      "growth": -20.2661
+    },
+    {
+      "name": "Heartland Bank Australia Limited",
+      "housing_total_dec": 201.5,
+      "housing_total_jun": 159.9,
+      "market_share": 0.0123,
+      "growth": 26.0163
+    },
+    {
+      "name": "Australia and New Zealand Banking Group Limited",
+      "housing_total_dec": 214337.3,
+      "housing_total_jun": 212399.6,
+      "market_share": 13.0467,
+      "growth": 0.9123
+    },
+    {
+      "name": "Judo Bank Pty Ltd",
+      "housing_total_dec": 794.7,
+      "housing_total_jun": 854.7,
+      "market_share": 0.0484,
+      "growth": -7.02
+    },
+    {
+      "name": "Members Banking Group Limited",
+      "housing_total_dec": 2057.2,
+      "housing_total_jun": 2034.6,
+      "market_share": 0.1252,
+      "growth": 1.1108
+    },
+    {
+      "name": "Horizon Credit Union Ltd",
+      "housing_total_dec": 389.4,
+      "housing_total_jun": 366.0,
+      "market_share": 0.0237,
+      "growth": 6.3934
+    },
+    {
+      "name": "Mega International Commercial Bank Co., Ltd.",
+      "housing_total_dec": 4.7,
+      "housing_total_jun": 5.3,
+      "market_share": 0.0003,
+      "growth": -11.3208
+    },
+    {
+      "name": "Heritage and People's Choice Limited",
+      "housing_total_dec": 16965.0,
+      "housing_total_jun": 16303.5,
+      "market_share": 1.0327,
+      "growth": 4.0574
+    },
+    {
+      "name": "MyState Bank Limited",
+      "housing_total_dec": 8614.5,
+      "housing_total_jun": 5139.7,
+      "market_share": 0.5244,
+      "growth": 67.6071
+    },
+    {
+      "name": "Queensland Country Bank Limited",
+      "housing_total_dec": 2256.3,
+      "housing_total_jun": 2142.7,
+      "market_share": 0.1373,
+      "growth": 5.3017
+    },
+    {
+      "name": "Police Financial Services Limited",
+      "housing_total_dec": 2489.8,
+      "housing_total_jun": 2336.6,
+      "market_share": 0.1516,
+      "growth": 6.5565
+    },
+    {
+      "name": "Newcastle Greater Mutual Group Ltd",
+      "housing_total_dec": 14056.1,
+      "housing_total_jun": 13396.0,
+      "market_share": 0.8556,
+      "growth": 4.9276
+    },
+    {
+      "name": "Rabobank Australia Limited",
+      "housing_total_dec": 51.1,
+      "housing_total_jun": 51.3,
+      "market_share": 0.0031,
+      "growth": -0.3899
+    },
+    {
+      "name": "Goulburn Murray Credit Union Co-operative Limited",
+      "housing_total_dec": 297.3,
+      "housing_total_jun": 281.8,
+      "market_share": 0.0181,
+      "growth": 5.5004
+    },
+    {
+      "name": "Orange Credit Union Limited",
+      "housing_total_dec": 136.5,
+      "housing_total_jun": 135.9,
+      "market_share": 0.0083,
+      "growth": 0.4415
+    },
+    {
+      "name": "Bank Australia Limited",
+      "housing_total_dec": 12652.4,
+      "housing_total_jun": 7112.8,
+      "market_share": 0.7701,
+      "growth": 77.8821
+    },
+    {
+      "name": "Police Bank Ltd",
+      "housing_total_dec": 1802.4,
+      "housing_total_jun": 1718.0,
+      "market_share": 0.1097,
+      "growth": 4.9127
+    },
+    {
+      "name": "Arab Bank Australia Limited",
+      "housing_total_dec": 311.5,
+      "housing_total_jun": 309.8,
+      "market_share": 0.019,
+      "growth": 0.5487
+    },
+    {
+      "name": "Summerland Financial Services Limited",
+      "housing_total_dec": 700.4,
+      "housing_total_jun": 672.9,
+      "market_share": 0.0426,
+      "growth": 4.0868
+    },
+    {
+      "name": "Dnister Ukrainian Credit Co-operative Limited",
+      "housing_total_dec": 146.2,
+      "housing_total_jun": 134.9,
+      "market_share": 0.0089,
+      "growth": 8.3766
+    },
+    {
+      "name": "IN1Bank Ltd",
+      "housing_total_dec": 1.6,
+      "housing_total_jun": 1.5,
+      "market_share": 0.0001,
+      "growth": 6.6667
+    },
+    {
+      "name": "ING Bank (Australia) Limited",
+      "housing_total_dec": 55936.7,
+      "housing_total_jun": 53027.4,
+      "market_share": 3.4049,
+      "growth": 5.4864
+    },
+    {
+      "name": "Bendigo and Adelaide Bank Limited",
+      "housing_total_dec": 48696.1,
+      "housing_total_jun": 49926.5,
+      "market_share": 2.9641,
+      "growth": -2.4644
+    },
+    {
+      "name": "Maitland Mutual Limited",
+      "housing_total_dec": 626.8,
+      "housing_total_jun": 620.8,
+      "market_share": 0.0382,
+      "growth": 0.9665
+    },
+    {
+      "name": "Australian Military Bank Ltd",
+      "housing_total_dec": 1675.9,
+      "housing_total_jun": 1518.8,
+      "market_share": 0.102,
+      "growth": 10.3437
+    },
+    {
+      "name": "Macquarie Bank Limited",
+      "housing_total_dec": 101195.3,
+      "housing_total_jun": 90228.4,
+      "market_share": 6.1597,
+      "growth": 12.1546
+    },
+    {
+      "name": "Southern Cross Credit Union Ltd",
+      "housing_total_dec": 556.5,
+      "housing_total_jun": 555.5,
+      "market_share": 0.0339,
+      "growth": 0.18
+    },
+    {
+      "name": "B & E Ltd",
+      "housing_total_dec": 1458.5,
+      "housing_total_jun": 1385.3,
+      "market_share": 0.0888,
+      "growth": 5.2841
+    },
+    {
+      "name": "Family First Credit Union Limited",
+      "housing_total_dec": 176.7,
+      "housing_total_jun": 172.4,
+      "market_share": 0.0108,
+      "growth": 2.4942
+    },
+    {
+      "name": "National Australia Bank Limited",
+      "housing_total_dec": 232542.8,
+      "housing_total_jun": 222456.2,
+      "market_share": 14.1548,
+      "growth": 4.5342
+    },
+    {
+      "name": "Bank of Queensland Limited",
+      "housing_total_dec": 37475.2,
+      "housing_total_jun": 39327.5,
+      "market_share": 2.2811,
+      "growth": -4.7099
+    },
+    {
+      "name": "Bank of Sydney Ltd",
+      "housing_total_dec": 1372.5,
+      "housing_total_jun": 1325.2,
+      "market_share": 0.0835,
+      "growth": 3.5693
+    },
+    {
+      "name": "Teachers Mutual Bank Limited",
+      "housing_total_dec": 8369.5,
+      "housing_total_jun": 7768.1,
+      "market_share": 0.5095,
+      "growth": 7.7419
+    },
+    {
+      "name": "Railways Credit Union Limited",
+      "housing_total_dec": 601.5,
+      "housing_total_jun": 569.6,
+      "market_share": 0.0366,
+      "growth": 5.6004
+    },
+    {
+      "name": "WAW Credit Union Co-Operative Limited",
+      "housing_total_dec": 391.1,
+      "housing_total_jun": 393.0,
+      "market_share": 0.0238,
+      "growth": -0.4835
+    },
+    {
+      "name": "Defence Bank Limited",
+      "housing_total_dec": 3138.5,
+      "housing_total_jun": 2977.7,
+      "market_share": 0.191,
+      "growth": 5.4001
+    },
+    {
+      "name": "Macarthur Credit Union Ltd",
+      "housing_total_dec": 214.9,
+      "housing_total_jun": 211.9,
+      "market_share": 0.0131,
+      "growth": 1.4158
+    },
+    {
+      "name": "QPCU Limited",
+      "housing_total_dec": 684.3,
+      "housing_total_jun": 658.3,
+      "market_share": 0.0417,
+      "growth": 3.9496
+    },
+    {
+      "name": "Community First Credit Union Limited",
+      "housing_total_dec": 1312.9,
+      "housing_total_jun": 1262.7,
+      "market_share": 0.0799,
+      "growth": 3.9756
+    },
+    {
+      "name": "Northern Inland Credit Union Limited",
+      "housing_total_dec": 251.6,
+      "housing_total_jun": 240.1,
+      "market_share": 0.0153,
+      "growth": 4.7897
+    },
+    {
+      "name": "Gateway Bank Ltd",
+      "housing_total_dec": 902.4,
+      "housing_total_jun": 928.5,
+      "market_share": 0.0549,
+      "growth": -2.811
+    },
+    {
+      "name": "IMB Ltd",
+      "housing_total_dec": 4978.2,
+      "housing_total_jun": 4689.3,
+      "market_share": 0.303,
+      "growth": 6.1608
+    }
+  ],
+  "inv_institutions": [
+    {
+      "name": "Beyond Bank Australia Limited",
+      "housing_total_dec": 1965.3,
+      "housing_total_jun": 1794.1,
+      "market_share": 0.2509,
+      "growth": 9.5424
+    },
+    {
+      "name": "Victoria Teachers Limited",
+      "housing_total_dec": 514.5,
+      "housing_total_jun": 516.6,
+      "market_share": 0.0657,
+      "growth": -0.4065
+    },
+    {
+      "name": "Regional Australia Bank Ltd",
+      "housing_total_dec": 609.1,
+      "housing_total_jun": 541.6,
+      "market_share": 0.0778,
+      "growth": 12.4631
+    },
+    {
+      "name": "The Capricornian Ltd",
+      "housing_total_dec": 62.1,
+      "housing_total_jun": 54.2,
+      "market_share": 0.0079,
+      "growth": 14.5756
+    },
+    {
+      "name": "KEB HANA Bank",
+      "housing_total_dec": 1.4,
+      "housing_total_jun": 1.4,
+      "market_share": 0.0002,
+      "growth": 0.0
+    },
+    {
+      "name": "Police & Nurses Limited",
+      "housing_total_dec": 1397.9,
+      "housing_total_jun": 1308.5,
+      "market_share": 0.1785,
+      "growth": 6.8323
+    },
+    {
+      "name": "Hume Bank Limited",
+      "housing_total_dec": 321.7,
+      "housing_total_jun": 323.9,
+      "market_share": 0.0411,
+      "growth": -0.6792
+    },
+    {
+      "name": "First Option Bank Ltd",
+      "housing_total_dec": 60.6,
+      "housing_total_jun": 62.7,
+      "market_share": 0.0077,
+      "growth": -3.3493
+    },
+    {
+      "name": "Bank of China (Australia) Limited",
+      "housing_total_dec": 1730.0,
+      "housing_total_jun": 1588.4,
+      "market_share": 0.2209,
+      "growth": 8.9146
+    },
+    {
+      "name": "Warwick Credit Union Ltd",
+      "housing_total_dec": 72.5,
+      "housing_total_jun": 68.9,
+      "market_share": 0.0093,
+      "growth": 5.225
+    },
+    {
+      "name": "South West Slopes Credit Union Ltd",
+      "housing_total_dec": 23.6,
+      "housing_total_jun": 25.5,
+      "market_share": 0.003,
+      "growth": -7.451
+    },
+    {
+      "name": "Police Credit Union Limited",
+      "housing_total_dec": 351.6,
+      "housing_total_jun": 309.2,
+      "market_share": 0.0449,
+      "growth": 13.7128
+    },
+    {
+      "name": "Australian Mutual Bank Ltd",
+      "housing_total_dec": 330.1,
+      "housing_total_jun": 313.7,
+      "market_share": 0.0421,
+      "growth": 5.2279
+    },
+    {
+      "name": "Central West Credit Union Limited",
+      "housing_total_dec": 32.2,
+      "housing_total_jun": 30.7,
+      "market_share": 0.0041,
+      "growth": 4.886
+    },
+    {
+      "name": "BNK Banking Corporation Limited",
+      "housing_total_dec": 238.9,
+      "housing_total_jun": 243.6,
+      "market_share": 0.0305,
+      "growth": -1.9294
+    },
+    {
+      "name": "Laboratories Credit Union Limited",
+      "housing_total_dec": 46.4,
+      "housing_total_jun": 47.0,
+      "market_share": 0.0059,
+      "growth": -1.2766
+    },
+    {
+      "name": "Commonwealth Bank of Australia",
+      "housing_total_dec": 214221.4,
+      "housing_total_jun": 202117.1,
+      "market_share": 27.3523,
+      "growth": 5.9888
+    },
+    {
+      "name": "HSBC Bank Australia Limited",
+      "housing_total_dec": 10610.7,
+      "housing_total_jun": 9968.6,
+      "market_share": 1.3548,
+      "growth": 6.4412
+    },
+    {
+      "name": "Credit Union Australia Ltd",
+      "housing_total_dec": 3192.6,
+      "housing_total_jun": 3093.5,
+      "market_share": 0.4076,
+      "growth": 3.2035
+    },
+    {
+      "name": "Westpac Banking Corporation",
+      "housing_total_dec": 169263.1,
+      "housing_total_jun": 164456.3,
+      "market_share": 21.6119,
+      "growth": 2.9228
+    },
+    {
+      "name": "Norfina Limited",
+      "housing_total_dec": 16766.6,
+      "housing_total_jun": 16062.4,
+      "market_share": 2.1408,
+      "growth": 4.3842
+    },
+    {
+      "name": "Coastline Credit Union Limited",
+      "housing_total_dec": 145.3,
+      "housing_total_jun": 142.4,
+      "market_share": 0.0186,
+      "growth": 2.0365
+    },
+    {
+      "name": "Unity Bank Limited",
+      "housing_total_dec": 380.0,
+      "housing_total_jun": 0.0,
+      "market_share": 0.0485,
+      "growth": 0.0
+    },
+    {
+      "name": "AMP Bank Limited",
+      "housing_total_dec": 8643.5,
+      "housing_total_jun": 8272.1,
+      "market_share": 1.1036,
+      "growth": 4.4898
+    },
+    {
+      "name": "Credit Union SA Ltd",
+      "housing_total_dec": 359.8,
+      "housing_total_jun": 347.6,
+      "market_share": 0.0459,
+      "growth": 3.5098
+    },
+    {
+      "name": "UBS AG",
+      "housing_total_dec": 172.1,
+      "housing_total_jun": 196.6,
+      "market_share": 0.022,
+      "growth": -12.4619
+    },
+    {
+      "name": "Heartland Bank Australia Limited",
+      "housing_total_dec": 7.3,
+      "housing_total_jun": 8.1,
+      "market_share": 0.0009,
+      "growth": -9.8765
+    },
+    {
+      "name": "Australia and New Zealand Banking Group Limited",
+      "housing_total_dec": 107147.3,
+      "housing_total_jun": 105307.6,
+      "market_share": 13.6808,
+      "growth": 1.747
+    },
+    {
+      "name": "Judo Bank Pty Ltd",
+      "housing_total_dec": 376.2,
+      "housing_total_jun": 302.2,
+      "market_share": 0.048,
+      "growth": 24.4871
+    },
+    {
+      "name": "Members Banking Group Limited",
+      "housing_total_dec": 544.8,
+      "housing_total_jun": 516.5,
+      "market_share": 0.0696,
+      "growth": 5.4792
+    },
+    {
+      "name": "Horizon Credit Union Ltd",
+      "housing_total_dec": 118.8,
+      "housing_total_jun": 121.7,
+      "market_share": 0.0152,
+      "growth": -2.3829
+    },
+    {
+      "name": "Mega International Commercial Bank Co., Ltd.",
+      "housing_total_dec": 5.0,
+      "housing_total_jun": 5.1,
+      "market_share": 0.0006,
+      "growth": -1.9608
+    },
+    {
+      "name": "Heritage and People's Choice Limited",
+      "housing_total_dec": 3835.4,
+      "housing_total_jun": 3675.9,
+      "market_share": 0.4897,
+      "growth": 4.3391
+    },
+    {
+      "name": "MyState Bank Limited",
+      "housing_total_dec": 1946.3,
+      "housing_total_jun": 1094.8,
+      "market_share": 0.2485,
+      "growth": 77.7768
+    },
+    {
+      "name": "Queensland Country Bank Limited",
+      "housing_total_dec": 742.4,
+      "housing_total_jun": 701.8,
+      "market_share": 0.0948,
+      "growth": 5.7851
+    },
+    {
+      "name": "Police Financial Services Limited",
+      "housing_total_dec": 444.6,
+      "housing_total_jun": 400.7,
+      "market_share": 0.0568,
+      "growth": 10.9558
+    },
+    {
+      "name": "Newcastle Greater Mutual Group Ltd",
+      "housing_total_dec": 4434.4,
+      "housing_total_jun": 4135.7,
+      "market_share": 0.5662,
+      "growth": 7.2225
+    },
+    {
+      "name": "Rabobank Australia Limited",
+      "housing_total_dec": 162.5,
+      "housing_total_jun": 175.8,
+      "market_share": 0.0207,
+      "growth": -7.5654
+    },
+    {
+      "name": "Goulburn Murray Credit Union Co-operative Limited",
+      "housing_total_dec": 79.3,
+      "housing_total_jun": 74.0,
+      "market_share": 0.0101,
+      "growth": 7.1622
+    },
+    {
+      "name": "Orange Credit Union Limited",
+      "housing_total_dec": 73.2,
+      "housing_total_jun": 78.4,
+      "market_share": 0.0093,
+      "growth": -6.6327
+    },
+    {
+      "name": "Bank Australia Limited",
+      "housing_total_dec": 3472.0,
+      "housing_total_jun": 2092.8,
+      "market_share": 0.4433,
+      "growth": 65.9021
+    },
+    {
+      "name": "Police Bank Ltd",
+      "housing_total_dec": 463.0,
+      "housing_total_jun": 431.8,
+      "market_share": 0.0591,
+      "growth": 7.2256
+    },
+    {
+      "name": "Taiwan Business Bank, Ltd",
+      "housing_total_dec": 14.3,
+      "housing_total_jun": 15.0,
+      "market_share": 0.0018,
+      "growth": -4.6667
+    },
+    {
+      "name": "Arab Bank Australia Limited",
+      "housing_total_dec": 250.5,
+      "housing_total_jun": 269.6,
+      "market_share": 0.032,
+      "growth": -7.0846
+    },
+    {
+      "name": "Summerland Financial Services Limited",
+      "housing_total_dec": 202.8,
+      "housing_total_jun": 197.0,
+      "market_share": 0.0259,
+      "growth": 2.9442
+    },
+    {
+      "name": "Dnister Ukrainian Credit Co-operative Limited",
+      "housing_total_dec": 61.5,
+      "housing_total_jun": 57.2,
+      "market_share": 0.0079,
+      "growth": 7.5175
+    },
+    {
+      "name": "IN1Bank Ltd",
+      "housing_total_dec": 1.2,
+      "housing_total_jun": 1.0,
+      "market_share": 0.0002,
+      "growth": 20.0
+    },
+    {
+      "name": "ING Bank (Australia) Limited",
+      "housing_total_dec": 15773.8,
+      "housing_total_jun": 13444.4,
+      "market_share": 2.014,
+      "growth": 17.3262
+    },
+    {
+      "name": "Bendigo and Adelaide Bank Limited",
+      "housing_total_dec": 14616.0,
+      "housing_total_jun": 15027.9,
+      "market_share": 1.8662,
+      "growth": -2.7409
+    },
+    {
+      "name": "Maitland Mutual Limited",
+      "housing_total_dec": 210.5,
+      "housing_total_jun": 213.7,
+      "market_share": 0.0269,
+      "growth": -1.4974
+    },
+    {
+      "name": "Australian Military Bank Ltd",
+      "housing_total_dec": 234.1,
+      "housing_total_jun": 226.5,
+      "market_share": 0.0299,
+      "growth": 3.3554
+    },
+    {
+      "name": "Macquarie Bank Limited",
+      "housing_total_dec": 63500.6,
+      "housing_total_jun": 54302.5,
+      "market_share": 8.1079,
+      "growth": 16.9386
+    },
+    {
+      "name": "Southern Cross Credit Union Ltd",
+      "housing_total_dec": 214.4,
+      "housing_total_jun": 198.2,
+      "market_share": 0.0274,
+      "growth": 8.1736
+    },
+    {
+      "name": "B & E Ltd",
+      "housing_total_dec": 230.5,
+      "housing_total_jun": 241.4,
+      "market_share": 0.0294,
+      "growth": -4.5153
+    },
+    {
+      "name": "Family First Credit Union Limited",
+      "housing_total_dec": 37.8,
+      "housing_total_jun": 38.7,
+      "market_share": 0.0048,
+      "growth": -2.3256
+    },
+    {
+      "name": "National Australia Bank Limited",
+      "housing_total_dec": 111123.6,
+      "housing_total_jun": 112206.0,
+      "market_share": 14.1885,
+      "growth": -0.9647
+    },
+    {
+      "name": "Bank of Queensland Limited",
+      "housing_total_dec": 16188.1,
+      "housing_total_jun": 16978.2,
+      "market_share": 2.0669,
+      "growth": -4.6536
+    },
+    {
+      "name": "Bank of Sydney Ltd",
+      "housing_total_dec": 510.4,
+      "housing_total_jun": 504.3,
+      "market_share": 0.0652,
+      "growth": 1.2096
+    },
+    {
+      "name": "Teachers Mutual Bank Limited",
+      "housing_total_dec": 1364.5,
+      "housing_total_jun": 1337.1,
+      "market_share": 0.1742,
+      "growth": 2.0492
+    },
+    {
+      "name": "Railways Credit Union Limited",
+      "housing_total_dec": 181.9,
+      "housing_total_jun": 162.0,
+      "market_share": 0.0232,
+      "growth": 12.284
+    },
+    {
+      "name": "WAW Credit Union Co-Operative Limited",
+      "housing_total_dec": 99.3,
+      "housing_total_jun": 103.6,
+      "market_share": 0.0127,
+      "growth": -4.1506
+    },
+    {
+      "name": "Defence Bank Limited",
+      "housing_total_dec": 496.5,
+      "housing_total_jun": 493.7,
+      "market_share": 0.0634,
+      "growth": 0.5671
+    },
+    {
+      "name": "Macarthur Credit Union Ltd",
+      "housing_total_dec": 50.4,
+      "housing_total_jun": 46.6,
+      "market_share": 0.0064,
+      "growth": 8.1545
+    },
+    {
+      "name": "QPCU Limited",
+      "housing_total_dec": 192.9,
+      "housing_total_jun": 180.3,
+      "market_share": 0.0246,
+      "growth": 6.9884
+    },
+    {
+      "name": "Community First Credit Union Limited",
+      "housing_total_dec": 524.8,
+      "housing_total_jun": 482.3,
+      "market_share": 0.067,
+      "growth": 8.8119
+    },
+    {
+      "name": "Northern Inland Credit Union Limited",
+      "housing_total_dec": 65.5,
+      "housing_total_jun": 68.0,
+      "market_share": 0.0084,
+      "growth": -3.6765
+    },
+    {
+      "name": "Gateway Bank Ltd",
+      "housing_total_dec": 193.3,
+      "housing_total_jun": 194.5,
+      "market_share": 0.0247,
+      "growth": -0.617
+    },
+    {
+      "name": "IMB Ltd",
+      "housing_total_dec": 1489.7,
+      "housing_total_jun": 1351.4,
+      "market_share": 0.1902,
+      "growth": 10.2338
+    }
+  ],
+  "oo_total_market_dec": 1642850.1,
+  "oo_total_market_jun": 1592193.3,
+  "oo_system_growth": 3.1816,
+  "inv_total_market_dec": 783194.4,
+  "inv_total_market_jun": 752071.7,
+  "inv_system_growth": 4.1383
+}

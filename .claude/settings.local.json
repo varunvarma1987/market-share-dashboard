@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(python3:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "WebFetch(domain:www.apra.gov.au)",
+      "PowerShell($ProgressPreference='SilentlyContinue'; $url = \"https://www.apra.gov.au/sites/default/files/2026-04/Monthly%20authorised%20deposit-taking%20institution%20statistics%20back-series%20March%202019%20-%20March%202026.xlsx\"; $out = \"C:\\\\D3\\\\market_share\\\\market_share_backseries_mar26.xlsx\"; try { Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing; \"OK\"; Get-Item $out | Select-Object Name, Length } catch { $_.Exception.Message })",
+      "PowerShell($ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $url = \"https://www.apra.gov.au/sites/default/files/2026-04/Monthly%20authorised%20deposit-taking%20institution%20statistics%20back-series%20March%202019%20-%20March%202026.xlsx\"; $out = \"C:\\\\D3\\\\market_share\\\\market_share_backseries_mar26.xlsx\"; \\(New-Object System.Net.WebClient\\).DownloadFile\\($url, $out\\); Get-Item $out | Format-List Name, Length)"
+    ]
+  }
+}
